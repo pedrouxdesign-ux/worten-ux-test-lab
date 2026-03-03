@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, tests, testResults, uxAnalyses, personas, skills, skillAssignments } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,151 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Tests
+export async function createTest(userId: number, data: {
+  title: string;
+  description?: string;
+  featureName: string;
+  userTask: string;
+  context?: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(tests).values({
+    userId,
+    ...data,
+  });
+  // Retornar o ID do teste inserido
+  return (result as any).insertId || 0;
+}
+
+export async function getTestById(testId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(tests).where(eq(tests.id, testId)).limit(1);
+  return result[0];
+}
+
+export async function getTestsByUserId(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(tests).where(eq(tests.userId, userId)).orderBy(desc(tests.createdAt));
+}
+
+export async function updateTestStatus(testId: number, status: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.update(tests).set({ status: status as any }).where(eq(tests.id, testId));
+}
+
+// Test Results
+export async function createTestResult(data: {
+  testId: number;
+  personaName: string;
+  report: string;
+  successfulCompletion: number;
+  painPoints?: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.insert(testResults).values(data);
+}
+
+export async function getTestResultsByTestId(testId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(testResults).where(eq(testResults.testId, testId));
+}
+
+// UX Analyses
+export async function createUxAnalysis(data: {
+  testId: number;
+  executiveSummary: string;
+  detailedAnalysis: string;
+  usabilityDiagnosis: string;
+  competitiveBenchmark?: string;
+  recommendations: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.insert(uxAnalyses).values(data);
+}
+
+export async function getUxAnalysisByTestId(testId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(uxAnalyses).where(eq(uxAnalyses.testId, testId)).limit(1);
+  return result[0];
+}
+
+// Personas
+export async function getActivePersonas(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(personas).where(and(eq(personas.userId, userId), eq(personas.isActive, 1)));
+}
+
+export async function getPersonaById(personaId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  
+  const result = await db.select().from(personas).where(eq(personas.id, personaId)).limit(1);
+  return result[0];
+}
+
+// Skills
+export async function getActiveSkills(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  return db.select().from(skills).where(and(eq(skills.userId, userId), eq(skills.isActive, 1)));
+}
+
+export async function getSkillsByAgent(agentName: string) {
+  const db = await getDb();
+  if (!db) return [];
+  
+  const assignments = await db.select().from(skillAssignments).where(eq(skillAssignments.agentName, agentName));
+  const skillIds = assignments.map(a => a.skillId);
+  
+  if (skillIds.length === 0) return [];
+  
+  return db.select().from(skills).where(inArray(skills.id, skillIds));
+}
+
+
+// Create Skill
+export async function createSkill(userId: number, data: {
+  name: string;
+  description?: string;
+  content: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const result = await db.insert(skills).values({
+    userId,
+    ...data,
+  });
+  return (result as any).insertId || 0;
+}
+
+// Assign Skill to Agent
+export async function assignSkillToAgent(skillId: number, agentName: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  return db.insert(skillAssignments).values({
+    skillId,
+    agentName,
+  });
+}
