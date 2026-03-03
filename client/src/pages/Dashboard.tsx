@@ -8,10 +8,15 @@ import { Loader2, Plus, TrendingUp, Users, Zap } from "lucide-react";
 import { useState } from "react";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user: authUser } = useAuth();
   const [, navigate] = useLocation();
   
-  const { data: tests, isLoading: testsLoading } = trpc.tests.list.useQuery();
+  // Mock user para desenvolvimento
+  const user = authUser || { id: 1, name: "Utilizador Demo", email: "demo@worten.pt", role: "user" as const };
+  
+  const { data: tests, isLoading: testsLoading } = trpc.tests.list.useQuery(undefined, {
+    retry: false,
+  });
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -156,6 +161,7 @@ export default function Dashboard() {
                       <Plus className="mr-2 h-4 w-4" />
                       Criar o Primeiro Teste
                     </Button>
+                    <p className="text-xs text-slate-500 mt-4">Nota: Funcionalidade de testes requer autenticação</p>
                   </div>
                 ) : (
                   <div className="space-y-3">

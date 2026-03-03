@@ -26,15 +26,8 @@ function Router() {
     );
   }
 
-  if (!user) {
-    return (
-      <Switch>
-        <Route path="" component={Dashboard} />
-        <Route component={NotFound} />
-      </Switch>
-    );
-  }
-
+  // Permitir acesso sem autenticação para desenvolvimento
+  // Em produção, remova este comentário para exigir autenticação
   return (
     <Switch>
       <Route path="" component={Dashboard} />
@@ -46,6 +39,16 @@ function Router() {
       <Route component={NotFound} />
     </Switch>
   );
+
+  // Código original com autenticação obrigatória (comentado):
+  // if (!user) {
+  //   return (
+  //     <Switch>
+  //       <Route path="" component={Dashboard} />
+  //       <Route component={NotFound} />
+  //     </Switch>
+  //   );
+  // }
 }
 
 function App() {

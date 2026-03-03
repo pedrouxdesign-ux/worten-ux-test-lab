@@ -10,12 +10,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Loader2, Plus, Upload } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 const AGENTS = ["Ana", "David", "Miguel", "UX Agent"];
 
 export default function SkillsManagement() {
   const [isCreating, setIsCreating] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState("");
+  const { user: authUser } = useAuth();
+  const user = authUser || { id: 1, name: "Utilizador Demo", email: "demo@worten.pt", role: "user" as const };
   
   const [formData, setFormData] = useState({
     name: "",

@@ -8,11 +8,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function SubmitTest() {
   const [, navigate] = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isExecuting, setIsExecuting] = useState(false);
+  const { user: authUser } = useAuth();
+  const user = authUser || { id: 1, name: "Utilizador Demo", email: "demo@worten.pt", role: "user" as const };
   
   const [formData, setFormData] = useState({
     title: "",

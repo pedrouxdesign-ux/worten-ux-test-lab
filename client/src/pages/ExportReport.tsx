@@ -5,9 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Download, FileText } from "lucide-react";
 import { Streamdown } from "streamdown";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function ExportReport() {
   const params = useParams();
+  const { user: authUser } = useAuth();
+  const user = authUser || { id: 1, name: "Utilizador Demo", email: "demo@worten.pt", role: "user" as const };
   const testId = parseInt(params?.id as string);
 
   const { data: test, isLoading: testLoading } = trpc.tests.getById.useQuery(
