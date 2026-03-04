@@ -5,7 +5,6 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useLocation } from "wouter";
 import { Check, ClipboardList, Copy, ListChecks, Moon, Sun, UserPlus, UsersRound } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 import { defaultPersonas } from "./UsersManagement";
 import { defaultScenarios } from "./ScenariosManagement";
 import { useTestsStore, generatePrompt, copyToClipboard } from "@/lib/tests-store";
@@ -21,6 +20,7 @@ export default function Dashboard() {
   const { tests, addTest } = useTestsStore();
   const [selectedPersonaId, setSelectedPersonaId] = useState<number | null>(null);
   const [selectedScenarioId, setSelectedScenarioId] = useState<number | null>(null);
+  const [btnState, setBtnState] = useState<"idle" | "copied" | "saved">("idle");
 
   const personas = defaultPersonas.filter(p => p.tipo === "persona");
   const selectedPersona = personas.find(p => p.id === selectedPersonaId) ?? null;
@@ -34,18 +34,12 @@ export default function Dashboard() {
     addTest({ personaId: selectedPersona.id, scenarioId: selectedScenario.id, prompt });
 
     const copied = await copyToClipboard(prompt);
-    if (copied) {
-      toast.success("Prompt copiado para o clipboard!", {
-        description: `Teste com ${selectedPersona.nome} × ${selectedScenario.titulo} criado. Cola o prompt no teu agente de IA.`,
-      });
-    } else {
-      toast.success("Teste criado!", {
-        description: `Vai à página de Testes para copiar o prompt de ${selectedPersona.nome} × ${selectedScenario.titulo}.`,
-      });
-    }
-
-    setSelectedPersonaId(null);
-    setSelectedScenarioId(null);
+    setBtnState(copied ? "copied" : "saved");
+    setTimeout(() => {
+      setBtnState("idle");
+      setSelectedPersonaId(null);
+      setSelectedScenarioId(null);
+    }, 2500);
   };
 
   return (
@@ -233,11 +227,31 @@ export default function Dashboard() {
                 <div className="flex flex-col gap-3 pt-1">
                   <Button
                     onClick={handleCreateTest}
-                    disabled={!selectedPersona || !selectedScenario}
-                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-40 h-11 text-base"
+                    disabled={!selectedPersona || !selectedScenario || btnState !== "idle"}
+                    className={`w-full h-11 text-base transition-all duration-300 ${
+                      btnState === "copied"
+                        ? "bg-green-600 hover:bg-green-600 text-white"
+                        : btnState === "saved"
+                        ? "bg-amber-500 hover:bg-amber-500 text-white"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
                   >
-                    <Copy className="h-4 w-4 mr-2" />
-                    Criar Teste e Copiar Prompt
+                    {btnState === "copied" ? (
+                      <>
+                        <Check className="h-4 w-4 mr-2" />
+                        Teste Criado · Prompt Copiado!
+                      </>
+                    ) : btnState === "saved" ? (
+                      <>
+                        <Check className="h-4 w-4 mr-2" />
+                        Teste Guardado · Copia em Testes
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4 mr-2" />
+                        Criar Teste e Copiar Prompt
+                      </>
+                    )}
                   </Button>
 
                   <button
