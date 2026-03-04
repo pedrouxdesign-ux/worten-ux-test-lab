@@ -14,7 +14,7 @@ import {
   Plus,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useTestsStore } from "@/lib/tests-store";
+import { useTestsStore, copyToClipboard } from "@/lib/tests-store";
 import { defaultPersonas } from "./UsersManagement";
 import { defaultScenarios } from "./ScenariosManagement";
 import type { TechLevel } from "./ScenariosManagement";
@@ -38,12 +38,12 @@ export default function TestsHistory() {
   const { tests, removeTest } = useTestsStore();
 
   const copyPrompt = async (prompt: string) => {
-    try {
-      await navigator.clipboard.writeText(prompt);
+    const copied = await copyToClipboard(prompt);
+    if (copied) {
       toast.success("Prompt copiado!", {
         description: "O prompt foi copiado para o clipboard.",
       });
-    } catch {
+    } else {
       toast.error("Não foi possível copiar", {
         description: "Tenta copiar manualmente na consola do browser.",
       });

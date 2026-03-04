@@ -47,6 +47,41 @@ export function useTestsStore() {
   return { tests, addTest, removeTest };
 }
 
+/**
+ * Copies text to clipboard using the modern API with a textarea fallback.
+ * Works in HTTP contexts (localhost, iframes) where navigator.clipboard may be unavailable.
+ */
+export async function copyToClipboard(text: string): Promise<boolean> {
+  // Modern async clipboard API (requires HTTPS or localhost with permissions)
+  if (navigator.clipboard) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fall through to execCommand fallback
+    }
+  }
+
+  // Legacy fallback: create a hidden textarea, select it, execCommand('copy')
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.top = "0";
+    textarea.style.left = "0";
+    textarea.style.opacity = "0";
+    textarea.style.pointerEvents = "none";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    const success = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return success;
+  } catch {
+    return false;
+  }
+}
+
 export function generatePrompt(persona: Persona, scenario: Scenario): string {
   const lines: string[] = [];
 

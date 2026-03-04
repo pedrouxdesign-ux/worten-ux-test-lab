@@ -8,7 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { defaultPersonas } from "./UsersManagement";
 import { defaultScenarios } from "./ScenariosManagement";
-import { useTestsStore, generatePrompt } from "@/lib/tests-store";
+import { useTestsStore, generatePrompt, copyToClipboard } from "@/lib/tests-store";
 
 export default function Dashboard() {
   const { user: authUser } = useAuth();
@@ -33,12 +33,12 @@ export default function Dashboard() {
 
     addTest({ personaId: selectedPersona.id, scenarioId: selectedScenario.id, prompt });
 
-    try {
-      await navigator.clipboard.writeText(prompt);
+    const copied = await copyToClipboard(prompt);
+    if (copied) {
       toast.success("Prompt copiado para o clipboard!", {
         description: `Teste com ${selectedPersona.nome} × ${selectedScenario.titulo} criado. Cola o prompt no teu agente de IA.`,
       });
-    } catch {
+    } else {
       toast.success("Teste criado!", {
         description: `Vai à página de Testes para copiar o prompt de ${selectedPersona.nome} × ${selectedScenario.titulo}.`,
       });
