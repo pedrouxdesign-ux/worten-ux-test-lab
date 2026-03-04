@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 const AGENTS = ["Ana", "David", "Miguel", "UX Agent"];
 
 export default function SkillsManagement() {
+  const [, navigate] = useLocation();
   const [isCreating, setIsCreating] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState("");
   const { user: authUser } = useAuth();
@@ -85,9 +87,14 @@ export default function SkillsManagement() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Gestão de Skills</h1>
-          <p className="text-slate-600">Carregue documentos de conhecimento e atribua-os aos agentes para enriquecer as análises</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Gestão de Skills</h1>
+            <p className="text-slate-600">Carregue documentos de conhecimento e atribua-os aos agentes para enriquecer as análises</p>
+          </div>
+          <Button onClick={() => navigate("/")} variant="outline">
+            Voltar ao Dashboard
+          </Button>
         </div>
 
         <Tabs defaultValue="create" className="space-y-4">
