@@ -10,7 +10,6 @@ import {
   Pencil,
   Trash2,
   Target,
-  AlertTriangle,
   BarChart3,
   ClipboardList,
 } from "lucide-react";
@@ -41,10 +40,10 @@ const defaultScenarios: Scenario[] = [
       "Pop-ups intrusivos que interrompem a navegação",
       "Preços inconsistentes entre variantes do produto",
     ],
-    instrucoes: `Durante a navegação, pensa em voz alta como a persona pensaria.
-- Identifica pontos de confusão, fricção ou erro
-- Nota o que chama atenção (positivo e negativo)
-- Regista a zona da página onde cada momento ocorre (ex: "acima da dobra", "coluna direita", "sticky bar")`,
+    instrucoes: `Acede à página do produto indicado e tenta completar a tarefa.
+- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
+- Navega como farias normalmente, sem preocupações em "acertar"
+- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
     estruturaRelatorio: [
       "Conseguiu completar o objetivo? (Sim / Parcialmente / Não)",
       "Tempo estimado até encontrar a informação de stock em loja",
@@ -65,10 +64,10 @@ const defaultScenarios: Scenario[] = [
       "Necessidade de imprimir etiqueta sem impressora disponível",
       "Falta de feedback sobre o estado da devolução",
     ],
-    instrucoes: `Navega a partir da área 'As minhas encomendas'.
-- Tenta completar o processo sem ajuda externa
-- Regista cada clique e o que esperavas vs o que aconteceu
-- Nota o nível de stress ou frustração em cada etapa`,
+    instrucoes: `Acede à tua área de cliente e tenta completar a tarefa.
+- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
+- Navega como farias normalmente, sem preocupações em "acertar"
+- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
     estruturaRelatorio: [
       "Conseguiu iniciar a devolução? (Sim / Parcialmente / Não)",
       "Número de passos necessários vs esperados",
@@ -90,10 +89,10 @@ const defaultScenarios: Scenario[] = [
       "Especificações técnicas incompletas ou vagas nas fichas",
       "Falta de comparação lado a lado de produtos",
     ],
-    instrucoes: `Usa exclusivamente a barra de pesquisa e os filtros disponíveis.
-- Não uses navegação por categoria — simula uma pesquisa real
-- Regista cada filtro que tentaste aplicar e se funcionou
-- Avalia a qualidade da informação técnica nas fichas de produto`,
+    instrucoes: `Começa na página inicial do site e tenta completar a tarefa.
+- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
+- Navega como farias normalmente, sem preocupações em "acertar"
+- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
     estruturaRelatorio: [
       "Conseguiu encontrar produto que cumpre os requisitos? (Sim / Parcialmente / Não)",
       "Filtros utilizados vs filtros desejados que não existiam",
@@ -115,10 +114,10 @@ const defaultScenarios: Scenario[] = [
       "Múltiplos redirects ou janelas de confirmação desnecessárias",
       "Falta de confirmação clara após compra concluída",
     ],
-    instrucoes: `Parte de um carrinho já preenchido com 1 produto.
-- Usa o perfil guardado com morada e cartão pré-definidos
-- Regista cada momento de dúvida sobre o que fazer a seguir
-- Avalia se o custo final foi claro desde o início`,
+    instrucoes: `Parte do carrinho já preenchido com o produto e tenta completar a tarefa.
+- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
+- Navega como farias normalmente, sem preocupações em "acertar"
+- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
     estruturaRelatorio: [
       "Conseguiu completar a compra? (Sim / Parcialmente / Não)",
       "Número de ecrãs/passos no checkout",
@@ -140,10 +139,10 @@ const defaultScenarios: Scenario[] = [
       "Necessidade de documentos físicos (fatura em papel)",
       "Chatbots que não resolvem e não oferecem escalada para humano",
     ],
-    instrucoes: `Navega a partir da página inicial como se fosses um cliente com um produto avariado.
-- Não uses o motor de pesquisa interno — navega pelos menus como um utilizador típico
-- Regista cada vez que ficaste confuso com a linguagem usada
-- Nota se em algum momento quiseste ligar para a loja em vez de continuar`,
+    instrucoes: `Começa na página inicial do site e tenta completar a tarefa.
+- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
+- Navega como farias normalmente, sem preocupações em "acertar"
+- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
     estruturaRelatorio: [
       "Conseguiu acionar a garantia online? (Sim / Parcialmente / Não)",
       "Número de cliques até chegar ao formulário de garantia",
@@ -257,27 +256,6 @@ export default function ScenariosManagement() {
                       <div className="flex gap-2 mb-3">
                         <Target className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-0.5" />
                         <p className="text-sm text-muted-foreground">{scenario.objetivo}</p>
-                      </div>
-
-                      {/* Frustrações */}
-                      <div className="mb-3">
-                        <div className="flex items-center gap-1.5 mb-1.5">
-                          <AlertTriangle className="h-3 w-3 text-amber-500" />
-                          <p className="text-xs font-medium text-muted-foreground">Frustrações típicas:</p>
-                        </div>
-                        <ul className="space-y-0.5 pl-1">
-                          {scenario.frustracoesTipicas.slice(0, 2).map((f, i) => (
-                            <li key={i} className="text-xs text-muted-foreground flex gap-1.5">
-                              <span className="text-amber-500 shrink-0">•</span>
-                              <span>{f}</span>
-                            </li>
-                          ))}
-                          {scenario.frustracoesTipicas.length > 2 && (
-                            <li className="text-xs text-muted-foreground italic">
-                              +{scenario.frustracoesTipicas.length - 2} mais...
-                            </li>
-                          )}
-                        </ul>
                       </div>
 
                       {/* Relatório items */}
