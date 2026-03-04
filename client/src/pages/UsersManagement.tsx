@@ -5,7 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useLocation } from "wouter";
 import { ArrowLeft, Moon, Sun, UserPlus, Pencil, Trash2, Monitor, Smartphone, Store } from "lucide-react";
 
-type Persona = {
+export type Persona = {
   id: number;
   nome: string;
   subtitulo: string;
@@ -23,7 +23,7 @@ type Persona = {
   tipo: "persona" | "agente";
 };
 
-const defaultPersonas: Persona[] = [
+export const defaultPersonas: Persona[] = [
   {
     id: 1,
     nome: "Ana",

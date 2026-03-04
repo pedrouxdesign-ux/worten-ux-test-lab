@@ -8,6 +8,7 @@ import AddPersona from "./pages/AddPersona";
 import Dashboard from "./pages/Dashboard";
 import UsersManagement from "./pages/UsersManagement";
 import ScenariosManagement from "./pages/ScenariosManagement";
+import TestsHistory from "./pages/TestsHistory";
 import SubmitTest from "./pages/SubmitTest";
 import TestResults from "./pages/TestResults";
 import SkillsManagement from "./pages/SkillsManagement";
@@ -41,6 +42,7 @@ function Router() {
       <Route path="/add-persona" component={AddPersona} />
       <Route path="/users" component={UsersManagement} />
       <Route path="/scenarios" component={ScenariosManagement} />
+      <Route path="/tests" component={TestsHistory} />
       <Route path="/skills" component={SkillsManagement} />
       <Route path="/export/:id" component={ExportReport} />
       <Route path="/404" component={NotFound} />
