@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/contexts/ThemeContext";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { Loader2, Moon, Plus, Sun, TrendingUp, UserPlus, Users, Zap } from "lucide-react";
+import { Loader2, Moon, Plus, Sun, TrendingUp, UserPlus, Users, UsersRound, Zap } from "lucide-react";
 import { useState } from "react";
 
 export default function Dashboard() {
@@ -64,6 +64,10 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">Bem-vindo, <span className="font-semibold text-foreground">{user?.name || "Utilizador"}</span></span>
+            <Button onClick={() => navigate("/users")} variant="outline">
+              <UsersRound className="mr-2 h-4 w-4" />
+              Utilizadores
+            </Button>
             <Button onClick={() => navigate("/add-persona")} variant="outline">
               <UserPlus className="mr-2 h-4 w-4" />
               Adicionar Persona
