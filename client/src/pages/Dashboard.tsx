@@ -73,7 +73,7 @@ export default function Dashboard() {
             <Button onClick={toggleTheme} variant="outline" size="icon" aria-label="Toggle theme">
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
-            <Button onClick={() => navigate("/submit")} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={() => navigate("/test-flow")} className="bg-blue-600 hover:bg-blue-700">
               <Plus className="mr-2 h-4 w-4" />
               Novo Teste
             </Button>
