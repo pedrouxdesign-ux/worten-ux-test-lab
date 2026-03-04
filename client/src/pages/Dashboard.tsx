@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useTheme } from "@/contexts/ThemeContext";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { Loader2, Moon, Plus, Sun, TrendingUp, UserPlus, Users, UsersRound, Zap } from "lucide-react";
+import { ClipboardList, Loader2, Moon, Plus, Sun, TrendingUp, UserPlus, Users, UsersRound, Zap } from "lucide-react";
 import { useState } from "react";
 
 export default function Dashboard() {
@@ -72,8 +72,9 @@ export default function Dashboard() {
               <UserPlus className="mr-2 h-4 w-4" />
               Adicionar Persona
             </Button>
-            <Button onClick={() => navigate("/test-flow")} variant="outline">
-              Teste do Fluxo
+            <Button onClick={() => navigate("/scenarios")} variant="outline">
+              <ClipboardList className="mr-2 h-4 w-4" />
+              Cenários
             </Button>
             <Button onClick={toggleTheme} variant="outline" size="icon" aria-label="Toggle theme">
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
