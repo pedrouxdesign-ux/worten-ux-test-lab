@@ -41,3 +41,11 @@
 - [x] Refinamentos de UI/UX
 - [x] Documentação final
 - [x] Entrega ao utilizadore entrega
+
+## Fase 8: Implementação do Fluxo Funcional Completo
+- [x] Corrigir navegação entre páginas (wouter routing)
+- [x] Implementar formulário de submissão de testes funcional
+- [x] Conectar ao backend para salvar testes
+- [x] Implementar execução dos agentes (personas + UX Agent)
+- [x] Implementar página de resultados com relatos
+- [x] Testar fluxo completo end-to-end

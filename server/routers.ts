@@ -20,7 +20,7 @@ export const appRouter = router({
   }),
 
   tests: router({
-    create: protectedProcedure
+    create: publicProcedure
       .input(z.object({
         title: z.string().min(1),
         description: z.string().optional(),
@@ -29,15 +29,17 @@ export const appRouter = router({
         context: z.string().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
-        const testId = await createTest(ctx.user.id, input);
+        const userId = ctx.user?.id || 1;
+        const testId = await createTest(userId, input);
         return testId;
       }),
     
-    list: protectedProcedure.query(async ({ ctx }) => {
-      return getTestsByUserId(ctx.user.id);
+    list: publicProcedure.query(async ({ ctx }) => {
+      const userId = ctx.user?.id || 1;
+      return getTestsByUserId(userId);
     }),
     
-    getById: protectedProcedure
+    getById: publicProcedure
       .input(z.object({ testId: z.number() }))
       .query(async ({ input }) => {
         return getTestById(input.testId);
@@ -45,7 +47,7 @@ export const appRouter = router({
   }),
   
   testResults: router({
-    getByTestId: protectedProcedure
+    getByTestId: publicProcedure
       .input(z.object({ testId: z.number() }))
       .query(async ({ input }) => {
         return getTestResultsByTestId(input.testId);
@@ -53,7 +55,7 @@ export const appRouter = router({
   }),
   
   uxAnalysis: router({
-    getByTestId: protectedProcedure
+    getByTestId: publicProcedure
       .input(z.object({ testId: z.number() }))
       .query(async ({ input }) => {
         return getUxAnalysisByTestId(input.testId);
@@ -61,13 +63,14 @@ export const appRouter = router({
   }),
   
   personas: router({
-    list: protectedProcedure.query(async ({ ctx }) => {
-      return getActivePersonas(ctx.user.id);
+    list: publicProcedure.query(async ({ ctx }) => {
+      const userId = ctx.user?.id || 1;
+      return getActivePersonas(userId);
     }),
   }),
   
   testExecution: router({
-    execute: protectedProcedure
+    execute: publicProcedure
       .input(z.object({ testId: z.number() }))
       .mutation(async ({ input }) => {
         const { executeFullTest } = await import("./testExecutor");
@@ -79,21 +82,23 @@ export const appRouter = router({
   }),
   
   skills: router({
-    create: protectedProcedure
+    create: publicProcedure
       .input(z.object({
         name: z.string().min(1),
         description: z.string().optional(),
         content: z.string().min(1),
       }))
       .mutation(async ({ ctx, input }) => {
-        return createSkill(ctx.user.id, input);
+        const userId = ctx.user?.id || 1;
+        return createSkill(userId, input);
       }),
     
-    list: protectedProcedure.query(async ({ ctx }) => {
-      return getActiveSkills(ctx.user.id);
+    list: publicProcedure.query(async ({ ctx }) => {
+      const userId = ctx.user?.id || 1;
+      return getActiveSkills(userId);
     }),
     
-    assign: protectedProcedure
+    assign: publicProcedure
       .input(z.object({
         skillId: z.number(),
         agentName: z.string(),

@@ -9,6 +9,7 @@ import SubmitTest from "./pages/SubmitTest";
 import TestResults from "./pages/TestResults";
 import SkillsManagement from "./pages/SkillsManagement";
 import ExportReport from "./pages/ExportReport";
+import TestFlow from "./pages/TestFlow";
 import { useAuth } from "./_core/hooks/useAuth";
 import { Loader2 } from "lucide-react";
 
@@ -32,6 +33,7 @@ function Router() {
     <Switch>
       <Route path="" component={Dashboard} />
       <Route path="/submit" component={SubmitTest} />
+      <Route path="/test-flow" component={TestFlow} />
       <Route path="/test/:id" component={TestResults} />
       <Route path="/skills" component={SkillsManagement} />
       <Route path="/export/:id" component={ExportReport} />

@@ -65,6 +65,9 @@ export default function Dashboard() {
             <Button onClick={() => navigate("/skills")} variant="outline" className="border-slate-300">
               Gestão de Skills
             </Button>
+            <Button onClick={() => navigate("/test-flow")} variant="outline" className="border-slate-300">
+              Teste do Fluxo
+            </Button>
             <Button onClick={() => navigate("/submit")} className="bg-blue-600 hover:bg-blue-700">
               <Plus className="mr-2 h-4 w-4" />
               Novo Teste
