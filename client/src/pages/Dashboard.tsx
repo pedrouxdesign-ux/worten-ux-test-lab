@@ -2,13 +2,15 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTheme } from "@/contexts/ThemeContext";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { Loader2, Plus, TrendingUp, Users, Zap } from "lucide-react";
+import { Loader2, Moon, Plus, Sun, TrendingUp, Users, Zap } from "lucide-react";
 import { useState } from "react";
 
 export default function Dashboard() {
   const { user: authUser } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [, navigate] = useLocation();
   
   // Mock user para desenvolvimento
@@ -52,21 +54,24 @@ export default function Dashboard() {
   const runningTests = tests?.filter(t => t.status === "running").length || 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10 shadow-sm">
+      <div className="bg-background border-b sticky top-0 z-10 shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Worten UX Persona Lab</h1>
-            <p className="text-sm text-slate-600">Testes de usabilidade automatizados com IA</p>
+            <h1 className="text-2xl font-bold text-foreground">Worten UX Persona Lab</h1>
+            <p className="text-sm text-muted-foreground">Testes de usabilidade automatizados com IA</p>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-slate-600">Bem-vindo, <span className="font-semibold">{user?.name || "Utilizador"}</span></span>
-            <Button onClick={() => navigate("/skills")} variant="outline" className="border-slate-300">
+            <span className="text-sm text-muted-foreground">Bem-vindo, <span className="font-semibold text-foreground">{user?.name || "Utilizador"}</span></span>
+            <Button onClick={() => navigate("/skills")} variant="outline">
               Gestão de Skills
             </Button>
-            <Button onClick={() => navigate("/test-flow")} variant="outline" className="border-slate-300">
+            <Button onClick={() => navigate("/test-flow")} variant="outline">
               Teste do Fluxo
+            </Button>
+            <Button onClick={toggleTheme} variant="outline" size="icon" aria-label="Toggle theme">
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
             <Button onClick={() => navigate("/submit")} className="bg-blue-600 hover:bg-blue-700">
               <Plus className="mr-2 h-4 w-4" />
@@ -83,8 +88,8 @@ export default function Dashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600 mb-1">Testes Concluídos</p>
-                  <p className="text-3xl font-bold text-slate-900">{completedTests}</p>
+                  <p className="text-sm text-muted-foreground mb-1">Testes Concluídos</p>
+                  <p className="text-3xl font-bold text-foreground">{completedTests}</p>
                 </div>
                 <TrendingUp className="h-8 w-8 text-green-600 opacity-20" />
               </div>
@@ -95,8 +100,8 @@ export default function Dashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600 mb-1">Em Processamento</p>
-                  <p className="text-3xl font-bold text-slate-900">{runningTests}</p>
+                  <p className="text-sm text-muted-foreground mb-1">Em Processamento</p>
+                  <p className="text-3xl font-bold text-foreground">{runningTests}</p>
                 </div>
                 <Zap className="h-8 w-8 text-blue-600 opacity-20" />
               </div>
@@ -107,8 +112,8 @@ export default function Dashboard() {
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600 mb-1">Total de Testes</p>
-                  <p className="text-3xl font-bold text-slate-900">{tests?.length || 0}</p>
+                  <p className="text-sm text-muted-foreground mb-1">Total de Testes</p>
+                  <p className="text-3xl font-bold text-foreground">{tests?.length || 0}</p>
                 </div>
                 <Users className="h-8 w-8 text-purple-600 opacity-20" />
               </div>
@@ -120,11 +125,11 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Welcome Card */}
           <div className="lg:col-span-1">
-            <Card className="shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+            <Card className="shadow-lg bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-900">
               <CardHeader>
                 <CardTitle className="text-lg">Como Funciona</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 text-sm text-slate-700">
+              <CardContent className="space-y-4 text-sm text-muted-foreground">
                 <div>
                   <p className="font-semibold mb-1">1. Submeta um Teste</p>
                   <p className="text-xs">Descreva a feature ou problema que deseja testar</p>
@@ -148,7 +153,7 @@ export default function Dashboard() {
           {/* Tests List */}
           <div className="lg:col-span-2">
             <Card className="shadow-lg">
-              <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 border-b">
+              <CardHeader className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border-b">
                 <CardTitle>Histórico de Testes</CardTitle>
                 <CardDescription>Todos os testes que você submeteu</CardDescription>
               </CardHeader>
@@ -159,12 +164,12 @@ export default function Dashboard() {
                   </div>
                 ) : !tests || tests.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-slate-600 mb-4">Ainda não tem testes submetidos</p>
+                    <p className="text-muted-foreground mb-4">Ainda não tem testes submetidos</p>
                     <Button onClick={() => navigate("/submit")} className="bg-blue-600 hover:bg-blue-700">
                       <Plus className="mr-2 h-4 w-4" />
                       Criar o Primeiro Teste
                     </Button>
-                    <p className="text-xs text-slate-500 mt-4">Nota: Funcionalidade de testes requer autenticação</p>
+                    <p className="text-xs text-muted-foreground mt-4">Nota: Funcionalidade de testes requer autenticação</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -172,18 +177,18 @@ export default function Dashboard() {
                       <div
                         key={test.id}
                         onClick={() => navigate(`/test/${test.id}`)}
-                        className="p-4 border border-slate-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors cursor-pointer"
+                        className="p-4 border rounded-lg hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-colors cursor-pointer"
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div className="flex-1">
-                            <h3 className="font-semibold text-slate-900 mb-1">{test.title}</h3>
-                            <p className="text-sm text-slate-600 mb-2">Feature: {test.featureName}</p>
+                            <h3 className="font-semibold text-foreground mb-1">{test.title}</h3>
+                            <p className="text-sm text-muted-foreground mb-2">Feature: {test.featureName}</p>
                           </div>
                           <Badge className={getStatusColor(test.status)}>
                             {getStatusLabel(test.status)}
                           </Badge>
                         </div>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-muted-foreground">
                           Criado em {new Date(test.createdAt).toLocaleDateString("pt-PT")}
                         </p>
                       </div>
@@ -196,13 +201,13 @@ export default function Dashboard() {
         </div>
 
         {/* Info Banner */}
-        <Card className="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 shadow-md">
+        <Card className="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border-purple-200 dark:border-purple-900 shadow-md">
           <CardContent className="pt-6">
-            <h3 className="font-semibold text-slate-900 mb-2">Dica: Maximize o Valor dos Seus Testes</h3>
-            <p className="text-sm text-slate-700 mb-3">
+            <h3 className="font-semibold text-foreground mb-2">Dica: Maximize o Valor dos Seus Testes</h3>
+            <p className="text-sm text-muted-foreground mb-3">
               Para obter análises mais precisas, forneça contexto claro sobre a tarefa do utilizador. Quanto mais específico for, melhor será a simulação das personas.
             </p>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-muted-foreground">
               💡 Exemplo: Em vez de "Testar o menu", diga "Encontre a sua última fatura e acione a garantia de um produto comprado há 6 meses"
             </p>
           </CardContent>
