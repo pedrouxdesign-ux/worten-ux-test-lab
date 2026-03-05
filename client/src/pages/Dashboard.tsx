@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLocation } from "wouter";
-import { Check, ClipboardList, Copy, ListChecks, Moon, Sun, UserPlus, UsersRound } from "lucide-react";
+import { Check, ClipboardList, Copy, FileText, ListChecks, Moon, Sun, UserPlus, UsersRound } from "lucide-react";
 import { useState } from "react";
 import { defaultPersonas } from "./UsersManagement";
 import { defaultScenarios } from "./ScenariosManagement";
@@ -70,6 +70,10 @@ export default function Dashboard() {
             <Button onClick={() => navigate("/tests")} variant="outline" size="sm">
               <ListChecks className="mr-2 h-4 w-4" />
               Testes
+            </Button>
+            <Button onClick={() => navigate("/reports")} variant="outline" size="sm">
+              <FileText className="mr-2 h-4 w-4" />
+              Relatórios
             </Button>
             <Button onClick={toggleTheme} variant="outline" size="icon" aria-label="Toggle theme">
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
