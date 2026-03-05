@@ -23,6 +23,8 @@ import {
   Quote,
   Lightbulb,
   TrendingDown,
+  TrendingUp,
+  ThumbsUp,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
@@ -239,7 +241,7 @@ function ReportView({ report }: { report: ParsedReport }) {
       </Card>
 
       {/* ── METRIC CARDS ─────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         {[
           {
             label: "Objetivo",
@@ -257,7 +259,14 @@ function ReportView({ report }: { report: ParsedReport }) {
             small: true,
           },
           {
-            label: "Total Fricções",
+            label: "Pontos Positivos",
+            value: String(report.positiveFindings.length),
+            color: report.positiveFindings.length > 0 ? "text-green-600" : "text-muted-foreground",
+            icon: ThumbsUp,
+            iconColor: "text-green-500",
+          },
+          {
+            label: "Fricções",
             value: String(report.frictions.length),
             color: "text-amber-600",
             icon: AlertTriangle,
@@ -322,6 +331,63 @@ function ReportView({ report }: { report: ParsedReport }) {
             })}
           </CardContent>
         </Card>
+      )}
+
+      {/* ── POSITIVE FINDINGS ──────────────────────────────────── */}
+      {report.positiveFindings.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <ThumbsUp className="h-4 w-4 text-green-500" />
+            <h3 className="text-base font-semibold text-foreground">
+              O Que Funciona Bem
+            </h3>
+            <span className="text-xs text-muted-foreground">
+              ({report.positiveFindings.length} pontos positivos)
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {report.positiveFindings.map((pf) => (
+              <div
+                key={pf.number}
+                className="rounded-xl border border-l-4 border-l-green-500 shadow-sm overflow-hidden"
+              >
+                <div className="px-4 py-3 bg-green-50 dark:bg-green-950/20">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-xs font-bold text-muted-foreground shrink-0">
+                      #{pf.number}
+                    </span>
+                    <h4 className="text-sm font-semibold text-foreground">
+                      {pf.title}
+                    </h4>
+                    <span className="inline-flex text-xs font-bold px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+                      POSITIVO
+                    </span>
+                  </div>
+                  {pf.description && (
+                    <p className="text-sm text-muted-foreground mb-2 leading-relaxed">
+                      {pf.description}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+                    {pf.zone && (
+                      <span className="flex items-center gap-1.5 text-muted-foreground">
+                        <span className="text-base leading-none">📍</span>
+                        <span className="font-medium">{pf.zone}</span>
+                      </span>
+                    )}
+                    {pf.impact && (
+                      <span className="flex items-center gap-1.5 text-green-700 dark:text-green-400">
+                        <span className="text-base leading-none">📈</span>
+                        <span>{pf.impact}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* ── FRICTIONS ────────────────────────────────────────────── */}
@@ -590,7 +656,7 @@ export default function ReportBuilder() {
     const parsed = parseReport(rawText);
     if (
       !parsed ||
-      (parsed.frictions.length === 0 && !parsed.completionStatus)
+      (parsed.frictions.length === 0 && parsed.positiveFindings.length === 0 && !parsed.completionStatus)
     ) {
       setError(
         "Não foi possível detectar a estrutura do relatório. Certifica-te que o texto inclui as secções PERSONA, TAREFA e o relatório com FRICÇÃO #N."
@@ -754,6 +820,7 @@ O motor vai detectar automaticamente:
 • Cenário (nome, categoria)
 • Conclusão do objetivo (Sim / Parcialmente / Não)
 • Tempo estimado
+• Pontos positivos (o que funciona bem)
 • Fricções com severidade, zona e impacto
 • Citações diretas da persona
 • Resumo executivo e recomendações`}

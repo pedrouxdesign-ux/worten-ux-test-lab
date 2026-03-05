@@ -2,6 +2,14 @@ import { useState } from "react";
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
+export type PositiveFinding = {
+  number: number;
+  title: string;
+  description: string;
+  zone: string;
+  impact: string;
+};
+
 export type Friction = {
   number: number;
   title: string;
@@ -27,6 +35,7 @@ export type ParsedReport = {
   completionStatus: "Sim" | "Parcialmente" | "Não" | null;
   completionDetail: string;
   timeEstimate: string;
+  positiveFindings: PositiveFinding[];
   frictions: Friction[];
   confusionQuotes: ConfusionQuote[];
   executiveSummary: string;
@@ -175,7 +184,31 @@ export function parseReport(rawText: string): ParsedReport | null {
     timeEstimate = timeMatch[1].replace(/^[*\-•\s~]+/, "").trim();
   }
 
-  // ─── 7. FRICTIONS ───────────────────────────────────────────────
+  // ─── 7. POSITIVE FINDINGS ──────────────────────────────────────
+  const positiveFindings: PositiveFinding[] = [];
+
+  const positiveBlocks = reportText
+    .split(/(?=PONTO POSITIVO\s*#?\d+)/i)
+    .filter((b) => /^PONTO POSITIVO\s*#?\d+/i.test(b.trim()));
+
+  for (const block of positiveBlocks) {
+    const headerMatch = block.match(/^PONTO POSITIVO\s*#?(\d+)[:\s*]+([^\n]+)/i);
+    if (!headerMatch) continue;
+
+    const number = parseInt(headerMatch[1]);
+    const title = headerMatch[2].replace(/[*_]/g, "").trim();
+    const body = block.slice(headerMatch[0].length);
+
+    const description = extractField(body, ["Descrição", "Descricao", "Descriçao"]);
+    const zone = extractField(body, ["Zona da página", "Zona da pagina", "Zona"]);
+    const impact = extractField(body, ["Impacto"]);
+
+    if (title) {
+      positiveFindings.push({ number, title, description, zone, impact });
+    }
+  }
+
+  // ─── 8. FRICTIONS ─────────────────────────────────────────────
   const frictions: Friction[] = [];
 
   // Split text on FRICÇÃO markers
@@ -290,6 +323,7 @@ export function parseReport(rawText: string): ParsedReport | null {
     completionStatus,
     completionDetail,
     timeEstimate,
+    positiveFindings,
     frictions,
     confusionQuotes,
     executiveSummary,
