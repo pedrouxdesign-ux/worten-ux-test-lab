@@ -292,24 +292,29 @@ export function parseReport(rawText: string): ParsedReport | null {
   let overallImpact = "";
 
   const resumoMatch = reportText.match(
-    /RESUMO EXECUTIVO\s*\n([\s\S]*?)(?=Recomenda|Impacto global|$)/i
+    /RESUMO EXECUTIVO\s*\n([\s\S]*?)(?=\n\s*#{1,3}|\n\s*\d+\.\s*Recomenda|Recomenda|Impacto global|$)/i
   );
   if (resumoMatch) {
-    executiveSummary = resumoMatch[1].trim().slice(0, 1500);
+    // Remove any trailing heading fragments (e.g. "## 7.")
+    executiveSummary = resumoMatch[1]
+      .replace(/\n\s*#{1,3}[^\n]*$/, "")
+      .trim()
+      .slice(0, 1500);
   }
 
   const recMatch = reportText.match(
-    /Recomenda[çc][aã]o[^\n]*\n?([\s\S]*?)(?=Impacto|$)/i
+    /Recomenda[çc][aã]o[^\n]*\n+([\s\S]*?)(?=\n\s*#{1,3}|\n\s*\d+\.\s*Impacto|Impacto global|$)/i
   );
   if (recMatch) {
-    recommendations = recMatch[1].trim().slice(0, 600);
+    recommendations = recMatch[1].replace(/\n\s*#{1,3}[^\n]*$/, "").trim().slice(0, 600);
   }
 
+  // Allow blank line(s) between heading and content
   const impactMatch = reportText.match(
-    /Impacto global[^\n]*\n?([^\n]{10,250})/i
+    /Impacto global[^\n]*\n+([\s\S]{10,500}?)(?=\n\s*#{1,3}|$)/i
   );
   if (impactMatch) {
-    overallImpact = impactMatch[1].trim();
+    overallImpact = impactMatch[1].split("\n")[0].trim();
   }
 
   return {
