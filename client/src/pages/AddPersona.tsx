@@ -67,8 +67,8 @@ function DynamicList({
 
 /* ─── Frustração row ──────────────────────────────────────── */
 
-type FrustRow = { titulo: string; severidade: string; cenario: string; impacto: string };
-const emptyFrust = (): FrustRow => ({ titulo: "", severidade: "MÉDIA", cenario: "", impacto: "" });
+type FrustRow = { titulo: string; severidade: string; gatilho: string; impacto: string };
+const emptyFrust = (): FrustRow => ({ titulo: "", severidade: "MÉDIA", gatilho: "", impacto: "" });
 
 function FrustracaoList({ items, setItems }: { items: FrustRow[]; setItems: (v: FrustRow[]) => void }) {
   const update = (i: number, key: keyof FrustRow, val: string) => {
@@ -80,7 +80,7 @@ function FrustracaoList({ items, setItems }: { items: FrustRow[]; setItems: (v: 
     <Card className="shadow-md">
       <CardHeader>
         <CardTitle className="text-base">Frustrações Detalhadas</CardTitle>
-        <CardDescription>Pain points com severidade, cenário e impacto</CardDescription>
+        <CardDescription>Pain points com severidade, gatilho comportamental e impacto</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {items.map((f, i) => (
@@ -101,7 +101,7 @@ function FrustracaoList({ items, setItems }: { items: FrustRow[]; setItems: (v: 
                   </select>
                   <Input placeholder="Impacto (ex: Sai do site, vai para Amazon)" value={f.impacto} onChange={e => update(i, "impacto", e.target.value)} className="flex-1" />
                 </div>
-                <Textarea placeholder="Cenário concreto..." value={f.cenario} onChange={e => update(i, "cenario", e.target.value)} rows={2} className="text-sm" />
+                <Textarea placeholder="Gatilho comportamental (ex: Quando a interface usa termos técnicos que não compreende...)" value={f.gatilho} onChange={e => update(i, "gatilho", e.target.value)} rows={2} className="text-sm" />
               </div>
               <Button type="button" variant="ghost" size="icon" onClick={() => items.length > 1 && setItems(items.filter((_, j) => j !== i))} disabled={items.length === 1} className="shrink-0 text-muted-foreground hover:text-destructive mt-1">
                 <Trash2 className="h-4 w-4" />

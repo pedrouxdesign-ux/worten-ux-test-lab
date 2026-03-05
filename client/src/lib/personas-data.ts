@@ -24,7 +24,7 @@ export type PadraoCompra = {
 export type FrustracaoDetalhada = {
   titulo: string;
   severidade: "CRÍTICA" | "ALTA" | "MÉDIA" | "BAIXA";
-  cenario: string;
+  gatilho: string;
   reacaoEmocional: string;
   impacto: string;
 };
@@ -196,52 +196,52 @@ const ana: Persona = {
   ],
 
   frustracoes: [
-    "Inconsistência de informação (ver 'Disponível' e depois não haver stock)",
-    "Processos pós-venda opacos (sem visibilidade sobre devoluções/reparações)",
-    "Falta de autonomia (ter de recorrer ao apoio para tarefas simples)",
-    "Filtros de pesquisa ineficazes",
-    "UX não nativa no mobile",
+    "Informação que muda entre páginas ou etapas do processo",
+    "Processos pós-venda sem visibilidade ou controlo",
+    "Ter de contactar suporte para tarefas que deviam ser self-service",
+    "Ferramentas de pesquisa e filtro que não permitem refinar o suficiente",
+    "Experiência mobile lenta ou não-nativa",
   ],
   frustracoesDetalhadas: [
     {
-      titulo: "Informação Inconsistente",
+      titulo: "Informação Inconsistente entre Etapas",
       severidade: "CRÍTICA",
-      cenario:
-        "Vê 'Disponível: 2 unidades' na Worten. Vai ao checkout, diz 'Stock indisponível'.",
-      reacaoEmocional: "Raiva + Desconfiança — 'Porque é que me mostram se não têm?'",
-      impacto: "Sai do site, vai para Amazon. Nunca mais confia.",
+      gatilho:
+        "Quando dados apresentados numa página (disponibilidade, preço, prazo) contradizem o que aparece na etapa seguinte",
+      reacaoEmocional: "Raiva + Desconfiança — sente-se enganada, questiona a fiabilidade da plataforma",
+      impacto: "Abandona o processo e migra para concorrente que transmita mais confiança.",
     },
     {
-      titulo: "Processo Pós-Venda Opaco",
+      titulo: "Processos Pós-Venda Opacos",
       severidade: "CRÍTICA",
-      cenario:
-        "Compra monitor, após 3 meses tem 'dead pixels'. Não encontra info clara sobre devoluções. Liga para número, espera 10 min.",
-      reacaoEmocional: "Frustração + Impotência",
-      impacto: "'A Amazon facilita. A Worten complica.' — Perde o cliente para sempre.",
+      gatilho:
+        "Quando não consegue ver o estado de um pedido, devolução ou reparação, ou quando os passos seguintes não são claros",
+      reacaoEmocional: "Frustração + Impotência — sente que perdeu o controlo da situação",
+      impacto: "Associa a marca a complicação. Prefere plataformas com tracking transparente.",
     },
     {
-      titulo: "Filtros de Pesquisa Ineficazes",
+      titulo: "Filtros de Pesquisa Insuficientes",
       severidade: "MÉDIA",
-      cenario:
-        "Quer monitores 27' com USB-C. Filtro de tamanho existe mas USB-C não. Tem de ler descrição de cada um.",
-      reacaoEmocional: "Resignação + Frustração — 'Na Amazon, estes filtros existem'",
-      impacto: "Deslista as opções da Worten da busca.",
+      gatilho:
+        "Quando as opções de filtro não permitem refinar por critérios relevantes, obrigando a ler descrições uma a uma",
+      reacaoEmocional: "Resignação — compara mentalmente com plataformas onde filtra com precisão",
+      impacto: "Abandona a pesquisa no site e recorre a concorrentes com filtros mais completos.",
     },
     {
-      titulo: "Falta de Autonomia",
+      titulo: "Falta de Autonomia Digital",
       severidade: "MÉDIA",
-      cenario:
-        "Quer imprimir etiqueta de devolução ou agendar recolha. Tem de contactar suporte com tempos longos.",
-      reacaoEmocional: "Irritação + Indefesa",
-      impacto: "Prefere não comprar em sítios que tornam o processo complexo.",
+      gatilho:
+        "Quando uma tarefa simples (devolução, alteração, consulta) exige contactar suporte em vez de ser resolvida de forma autónoma",
+      reacaoEmocional: "Irritação — valoriza eficiência e sente o tempo desperdiçado",
+      impacto: "Evita compras futuras em plataformas que não ofereçam self-service completo.",
     },
     {
-      titulo: "UX Não Nativa no Mobile",
+      titulo: "Experiência Mobile Não Nativa",
       severidade: "BAIXA",
-      cenario:
-        "App Worten demora a carregar, animações lentas, checkout parece 'Web Wrapper'.",
-      reacaoEmocional: "Irritação ligeira — 'Por que é que isto é tão lento?'",
-      impacto: "Prefere usar Safari/website em vez da app.",
+      gatilho:
+        "Quando a app ou site mobile tem carregamentos lentos, animações pouco fluídas, ou comportamento diferente do esperado no dispositivo",
+      reacaoEmocional: "Irritação ligeira — nota a diferença de qualidade face a apps bem feitas",
+      impacto: "Prefere usar o browser em vez da app, ou adia a compra para desktop.",
     },
   ],
 
@@ -435,52 +435,52 @@ const david: Persona = {
   ],
 
   frustracoes: [
-    "Informação técnica incorreta ou incompleta (specs omissos, descrições vagas)",
-    "Processos de reparação lentos e analógicos (sem tracking online em tempo real)",
-    "'Dark patterns' na UI (truques de design, opt-out escondido, upselling agressivo)",
-    "Experiência de app não nativa (lentidão, Web Wrapper, animações não fluídas)",
-    "Falta de API ou integração (não consegue automatizar ou verificar stock programaticamente)",
+    "Especificações técnicas incompletas, ambíguas ou enganosas",
+    "Processos que recorrem a canais analógicos quando deviam ser 100% digitais",
+    "Padrões de design manipulativos (dark patterns, opt-out escondido)",
+    "Apps ou interfaces que não são nativas ou performantes",
+    "Ferramentas de filtragem e pesquisa limitadas para utilizadores avançados",
   ],
   frustracoesDetalhadas: [
     {
-      titulo: "Specs Técnicos Incorretos ou Omissos",
+      titulo: "Informação Técnica Imprecisa ou Omissa",
       severidade: "CRÍTICA",
-      cenario:
-        "Procura monitor gaming com 'tempo de resposta 1ms'. Site mostra '1ms' mas não especifica GTG vs MPRT. Compra, chega e é 4ms GTG.",
-      reacaoEmocional: "Raiva técnica — 'Isto é publicidade enganosa. 1ms MPRT não é 1ms GTG.'",
-      impacto: "Devolve produto, faz review negativa detalhada, nunca mais confia naquele seller.",
+      gatilho:
+        "Quando especificações relevantes estão ausentes, apresentadas de forma ambígua, ou não distinguem métricas técnicas importantes",
+      reacaoEmocional: "Raiva técnica — interpreta como publicidade enganosa e perde confiança imediata",
+      impacto: "Devolve o produto, faz review negativa detalhada, não volta a confiar na plataforma.",
     },
     {
-      titulo: "Processo de RMA Analógico",
+      titulo: "Processos Analógicos Desnecessários",
       severidade: "CRÍTICA",
-      cenario:
-        "GPU com artefactos. Tenta criar RMA online — sistema pede telefonar. Liga, espera 15 min, operador pede 'número de série' que já deu online.",
-      reacaoEmocional: "Frustração intensa — 'Em 2024 tenho de telefonar para devolver hardware?'",
-      impacto: "Prefere comprar em sites com self-service RMA. Partilha experiência negativa no Reddit.",
+      gatilho:
+        "Quando um processo que devia ser 100% digital exige telefonemas, papéis físicos, ou repetição de informação já fornecida",
+      reacaoEmocional: "Frustração intensa — considera inaceitável em pleno contexto digital",
+      impacto: "Migra para plataformas com processos totalmente digitais e self-service.",
     },
     {
-      titulo: "Dark Patterns na UI",
+      titulo: "Dark Patterns e Design Manipulativo",
       severidade: "ALTA",
-      cenario:
-        "No checkout, 'Seguro de extensão de garantia' está pré-selecionado. Botão de remover é cinza claro, quase invisível.",
-      reacaoEmocional: "Desprezo técnico — 'Acham que não vejo isto? Isto devia ser ilegal.'",
-      impacto: "Perde confiança na marca. Partilha screenshots nos fóruns como exemplo de má prática.",
+      gatilho:
+        "Quando a interface usa técnicas manipulativas: opções pré-selecionadas, botões de recusa pouco visíveis, upselling agressivo",
+      reacaoEmocional: "Desprezo técnico — detecta imediatamente e considera antiético",
+      impacto: "Perde confiança na marca. Partilha exemplos em comunidades online como má prática.",
     },
     {
-      titulo: "App Não Nativa / Web Wrapper",
+      titulo: "Interface Não Nativa / Baixa Performance",
       severidade: "MÉDIA",
-      cenario:
-        "Instala app da Worten. Nota gestos que não funcionam, scroll rubber-band diferente, animações a 30fps.",
-      reacaoEmocional: "Irritação técnica — 'Isto é um WebView embrulhado. Nem tentaram.'",
-      impacto: "Desinstala a app, usa apenas o website no browser.",
+      gatilho:
+        "Quando apps ou sites têm gestos que não funcionam, animações pouco fluídas, ou comportamento visivelmente diferente de apps nativas",
+      reacaoEmocional: "Irritação técnica — nota imediatamente que é um WebView ou solução apressada",
+      impacto: "Desinstala a app e usa alternativas. Baixa a percepção de qualidade técnica da marca.",
     },
     {
-      titulo: "Falta de Filtros Técnicos Avançados",
+      titulo: "Filtragem Limitada para Power Users",
       severidade: "MÉDIA",
-      cenario:
-        "Quer filtrar GPUs por VRAM (12GB+), TDP (<250W), e interface (PCIe 4.0). Site só permite filtrar por marca e preço.",
-      reacaoEmocional: "Resignação — 'Vou ao PCDiga que tem filtros a sério.'",
-      impacto: "Abandona pesquisa no site, vai para concorrente especializado.",
+      gatilho:
+        "Quando a pesquisa ou filtros não suportam critérios técnicos avançados, obrigando a análise manual de cada resultado",
+      reacaoEmocional: "Resignação — compara com plataformas especializadas que oferecem filtros granulares",
+      impacto: "Abandona a pesquisa e recorre a concorrentes especializados.",
     },
   ],
 
@@ -672,52 +672,52 @@ const miguel: Persona = {
   ],
 
   frustracoes: [
-    "Menus e linguagem confusa (termos como 'Serviços Pós-Venda' são vagos e intimidadores)",
-    "Apoio ao cliente robotizado (detesta chatbots e respostas automáticas)",
-    "Processos que exigem autonomia digital (imprimir etiquetas, agendar recolhas online)",
-    "Falta de contacto humano direto (número de telefone escondido, tudo redireciona para online)",
-    "Excesso de opções sem orientação (30 modelos de TV sem saber a diferença)",
+    "Linguagem técnica ou jargão que não compreende",
+    "Suporte automatizado que impede contacto com pessoa real",
+    "Processos que exigem competências digitais que não tem",
+    "Falta de acesso direto a contacto humano (telefone, loja)",
+    "Demasiadas opções sem orientação ou recomendação clara",
   ],
   frustracoesDetalhadas: [
     {
       titulo: "Linguagem Confusa e Intimidante",
       severidade: "CRÍTICA",
-      cenario:
-        "Quer devolver produto com defeito. Site diz 'Aceda ao Portal de Pós-Venda'. Não sabe o que é 'portal'. Clica, vê formulário com campos técnicos que não entende.",
-      reacaoEmocional: "Ansiedade + Vergonha — 'Devia saber fazer isto mas não consigo. Vou chatear o Ricardo.'",
-      impacto: "Desiste do processo online. Liga para o filho. Se filho não atende, não faz nada.",
+      gatilho:
+        "Quando a interface usa termos técnicos, jargão ou nomenclatura que não compreende, criando barreira à ação",
+      reacaoEmocional: "Ansiedade + Vergonha — sente que devia entender mas não consegue, e não quer parecer ignorante",
+      impacto: "Desiste do processo online. Pede ajuda a familiares ou adia indefinidamente.",
     },
     {
-      titulo: "Apoio Robotizado / Chatbots",
+      titulo: "Suporte Robotizado sem Escalada Humana",
       severidade: "CRÍTICA",
-      cenario:
-        "Tenta contactar suporte. Aparece chatbot que pede 'descreva o seu problema em palavras-chave'. Miguel escreve parágrafo inteiro. Bot não entende.",
-      reacaoEmocional: "Frustração + Raiva — 'Eu quero falar com uma PESSOA, não com um robô!'",
-      impacto: "Desiste do chat. Vai à loja física no sábado seguinte, mesmo que demore.",
+      gatilho:
+        "Quando tenta obter ajuda e é encaminhado para chatbots ou respostas automáticas que não resolvem o problema",
+      reacaoEmocional: "Frustração + Raiva — quer falar com uma pessoa real que o ouça e ajude",
+      impacto: "Desiste do canal digital. Desloca-se fisicamente à loja, mesmo que custe tempo e esforço.",
     },
     {
       titulo: "Processos Exclusivamente Digitais",
       severidade: "ALTA",
-      cenario:
-        "Precisa de imprimir etiqueta de devolução. Não tem impressora em casa. Site não oferece alternativa (ir à loja, envio por correio).",
-      reacaoEmocional: "Impotência — 'E agora? Tenho de ir a uma papelaria imprimir um papel?'",
-      impacto: "Guarda o produto com defeito em casa. Fala mal da marca aos amigos no café.",
+      gatilho:
+        "Quando uma tarefa exige competências digitais que não domina (imprimir documentos, preencher formulários complexos, navegar menus)",
+      reacaoEmocional: "Impotência — sente-se excluído por não ter as competências necessárias",
+      impacto: "Guarda o problema sem resolver. Associa a marca a frustração e queixa-se a conhecidos.",
     },
     {
-      titulo: "Excesso de Opções Sem Orientação",
+      titulo: "Excesso de Opções sem Orientação",
       severidade: "ALTA",
-      cenario:
-        "Quer comprar TV nova. Site mostra 47 modelos. Não sabe a diferença entre OLED, QLED, LED. Nenhuma recomendação personalizada.",
-      reacaoEmocional: "Paralisia + Confusão — 'Qual é a diferença? Qual é a boa para mim?'",
-      impacto: "Fecha o site, vai à loja sábado e pergunta ao funcionário 'Qual é que me recomenda?'",
+      gatilho:
+        "Quando é confrontado com muitas alternativas sem guia, comparação simples, ou recomendação clara que o ajude a decidir",
+      reacaoEmocional: "Paralisia + Confusão — não sabe qual escolher e tem medo de errar",
+      impacto: "Fecha o site e opta por ir à loja perguntar a um funcionário presencialmente.",
     },
     {
-      titulo: "Número de Telefone Escondido",
+      titulo: "Contacto Humano Difícil de Encontrar",
       severidade: "MÉDIA",
-      cenario:
-        "Quer ligar para a Worten. Vai ao site, clica em 'Contactos'. Encontra chat, email, FAQ, redes sociais — mas o número de telefone está enterrado no fundo.",
-      reacaoEmocional: "Irritação — 'Não querem que eu ligue? Escondem o número de propósito!'",
-      impacto: "Sente-se rejeitado pela marca. Compara com 'antigamente quando bastava ligar'.",
+      gatilho:
+        "Quando o acesso a telefone ou contacto humano está escondido, enterrado em menus, ou redirecionado para canais digitais",
+      reacaoEmocional: "Irritação — sente que a marca não quer ser contactada e o empurra para o digital",
+      impacto: "Perceciona a marca como fria e distante. Compara negativamente com experiências passadas.",
     },
   ],
 

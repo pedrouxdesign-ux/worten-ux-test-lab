@@ -104,7 +104,7 @@ export function generatePrompt(persona: Persona, scenario: Scenario): string {
 
   if (persona.frustracoes.length > 0) {
     lines.push("");
-    lines.push("Frustrações típicas desta persona:");
+    lines.push("Padrões comportamentais de frustração desta persona (gatilhos genéricos, NÃO cenários específicos):");
     persona.frustracoes.forEach(f => lines.push(`- ${f}`));
   }
 

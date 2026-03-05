@@ -234,7 +234,7 @@ function PersonaCard({ persona }: { persona: Persona }) {
                         <p className="text-xs font-bold text-foreground">{f.titulo}</p>
                         <SeverityBadge sev={f.severidade} />
                       </div>
-                      <p className="text-[11px] text-muted-foreground mb-1"><span className="font-medium">Cenário:</span> {f.cenario}</p>
+                      <p className="text-[11px] text-muted-foreground mb-1"><span className="font-medium">Gatilho:</span> {f.gatilho}</p>
                       <p className="text-[11px] text-muted-foreground mb-1"><span className="font-medium">Reação:</span> {f.reacaoEmocional}</p>
                       <p className="text-[11px] text-muted-foreground"><span className="font-medium">Impacto:</span> {f.impacto}</p>
                     </div>
