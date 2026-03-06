@@ -214,40 +214,25 @@ export default function Dashboard() {
                   <p className="text-sm font-medium text-foreground mb-3">
                     1. Seleciona a Persona
                   </p>
-                  <div className="grid grid-cols-3 gap-3">
-                    {personas.map(persona => (
-                      <button
-                        key={persona.id}
-                        onClick={() =>
-                          setSelectedPersonaId(
-                            persona.id === selectedPersonaId ? null : persona.id
-                          )
-                        }
-                        className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all cursor-pointer ${
-                          selectedPersonaId === persona.id
-                            ? "border-blue-500 bg-blue-50 dark:bg-blue-950/40"
-                            : "border-border hover:border-blue-300 hover:bg-muted/40"
-                        }`}
-                      >
-                        <div
-                          className={`h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
-                            selectedPersonaId === persona.id
-                              ? "bg-blue-500 text-white"
-                              : "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
-                          }`}
-                        >
-                          {persona.nome.charAt(0)}
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm font-semibold text-foreground">{persona.nome}</p>
-                          <p className="text-xs text-muted-foreground leading-tight">{persona.subtitulo}</p>
-                        </div>
-                        {selectedPersonaId === persona.id && (
-                          <Check className="h-4 w-4 text-blue-500" />
-                        )}
-                      </button>
+                  <select
+                    value={selectedPersonaId ?? ""}
+                    onChange={e =>
+                      setSelectedPersonaId(e.target.value ? Number(e.target.value) : null)
+                    }
+                    className="w-full rounded-md border border-input bg-background px-3 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  >
+                    <option value="">Seleciona uma persona...</option>
+                    {personas.map(p => (
+                      <option key={p.id} value={p.id}>
+                        {p.nome} — {p.subtitulo}
+                      </option>
                     ))}
-                  </div>
+                  </select>
+                  {selectedPersona && (
+                    <p className="mt-2 text-xs text-muted-foreground pl-1 italic">
+                      {selectedPersona.subtitulo}
+                    </p>
+                  )}
                 </div>
 
                 {/* Step 2: Scenario dropdown */}
