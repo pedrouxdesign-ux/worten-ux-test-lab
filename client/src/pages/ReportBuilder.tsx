@@ -27,6 +27,7 @@ import {
   ThumbsUp,
   ChevronDown,
   ChevronUp,
+  MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -137,6 +138,48 @@ const COMPLETION_CONFIG = {
   },
 };
 
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+
+/** Strip markdown bold/italic markers from text */
+const stripMd = (t: string) => t.replace(/\*\*/g, "").replace(/\*/g, "").trim();
+
+/** Styled section header with icon square, title, count badge and divider line */
+function SectionLabel({
+  icon: Icon,
+  iconBg,
+  iconColor,
+  title,
+  count,
+  sub,
+}: {
+  icon: React.ElementType;
+  iconBg: string;
+  iconColor: string;
+  title: string;
+  count?: number;
+  sub?: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 mb-4">
+      <div className={`flex items-center justify-center h-8 w-8 rounded-lg shrink-0 ${iconBg}`}>
+        <Icon className={`h-4 w-4 ${iconColor}`} />
+      </div>
+      <div className="min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h3 className="text-sm font-bold text-foreground">{title}</h3>
+          {count !== undefined && (
+            <span className="inline-flex items-center justify-center h-5 min-w-[1.25rem] px-1.5 rounded-full bg-muted text-[11px] font-bold text-muted-foreground">
+              {count}
+            </span>
+          )}
+          {sub && <span className="text-xs text-muted-foreground">{sub}</span>}
+        </div>
+      </div>
+      <div className="flex-1 h-px bg-border min-w-4" />
+    </div>
+  );
+}
+
 // ─── REPORT VIEW ─────────────────────────────────────────────────────────────
 
 function ReportView({ report }: { report: ParsedReport }) {
@@ -162,7 +205,6 @@ function ReportView({ report }: { report: ParsedReport }) {
     ? COMPLETION_CONFIG[report.completionStatus]
     : null;
 
-  // Severity counts for distribution bar
   const sevCounts: Record<string, number> = {};
   for (const f of report.frictions) {
     sevCounts[f.severity] = (sevCounts[f.severity] || 0) + 1;
@@ -175,41 +217,42 @@ function ReportView({ report }: { report: ParsedReport }) {
 
   return (
     <div className="space-y-6">
+
       {/* ── HERO CARD ────────────────────────────────────────────── */}
       <Card className="shadow-lg overflow-hidden border-0">
-        <div className="bg-gradient-to-r from-slate-800 via-slate-800 to-slate-900 p-6 text-white">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            {/* Persona + Scenario */}
-            <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-full bg-blue-500 flex items-center justify-center text-2xl font-bold shrink-0 shadow-lg">
+        <div className="bg-gradient-to-br from-slate-800 via-slate-800 to-slate-900 p-6 text-white">
+          <div className="flex items-start justify-between gap-6 flex-wrap">
+            {/* Left: persona + scenario */}
+            <div className="flex items-start gap-4 min-w-0">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-2xl font-bold shrink-0 shadow-lg">
                 {report.personaName.charAt(0) || "?"}
               </div>
-              <div>
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-1">
-                  <h2 className="text-xl font-bold leading-tight">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-0.5">
+                  <h2 className="text-xl font-bold leading-tight tracking-tight">
                     {report.personaName || "Persona"}
                   </h2>
                   {report.personaSubtitle && (
-                    <span className="text-sm text-slate-300">
+                    <span className="text-sm text-slate-300 font-normal">
                       — {report.personaSubtitle}
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-slate-300 font-medium mb-1.5">
+                <p className="text-base text-white/90 font-semibold mb-2">
                   {report.scenarioName || "Cenário não detectado"}
                 </p>
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5">
                   {report.category && (
-                    <span className="inline-flex text-xs px-2 py-0.5 rounded-full bg-white/10 text-slate-200">
+                    <span className="inline-flex text-xs px-2.5 py-0.5 rounded-full bg-white/10 border border-white/10 text-slate-200">
                       {report.category}
                     </span>
                   )}
                   {report.stepsCount && (
-                    <span className="inline-flex text-xs px-2 py-0.5 rounded-full bg-white/10 text-slate-200">
+                    <span className="inline-flex text-xs px-2.5 py-0.5 rounded-full bg-white/10 border border-white/10 text-slate-200">
                       {report.stepsCount} passos
                     </span>
                   )}
-                  <span className="inline-flex text-xs px-2 py-0.5 rounded-full bg-white/10 text-slate-200">
+                  <span className="inline-flex text-xs px-2.5 py-0.5 rounded-full bg-white/10 border border-white/10 text-slate-200">
                     {new Date(report.parsedAt).toLocaleDateString("pt-PT", {
                       day: "2-digit",
                       month: "short",
@@ -220,17 +263,15 @@ function ReportView({ report }: { report: ParsedReport }) {
               </div>
             </div>
 
-            {/* Completion badge */}
+            {/* Right: completion status */}
             {completionCfg && report.completionStatus && (
               <div className="shrink-0">
-                <div
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${completionCfg.badge}`}
-                >
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold shadow-sm ${completionCfg.badge}`}>
                   <completionCfg.icon className="h-4 w-4" />
                   {completionCfg.label}
                 </div>
                 {report.completionDetail && (
-                  <p className="text-xs text-slate-400 mt-1.5 max-w-xs leading-relaxed">
+                  <p className="text-xs text-slate-400 mt-2 max-w-[220px] leading-relaxed">
                     {report.completionDetail.slice(0, 120)}
                     {report.completionDetail.length > 120 ? "…" : ""}
                   </p>
@@ -241,45 +282,44 @@ function ReportView({ report }: { report: ParsedReport }) {
         </div>
       </Card>
 
-      {/* ── TASK DESCRIPTION COLLAPSIBLE ─────────────────────────── */}
+      {/* ── TAREFA SOLICITADA ─────────────────────────────────────── */}
       {(report.taskDescription || report.objetivo) && (
-        <Card className="shadow-sm overflow-hidden">
+        <Card className="shadow-sm overflow-hidden border-l-4 border-l-blue-400">
           <button
             onClick={() => setTaskOpen((v) => !v)}
-            className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors"
+            className="w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left hover:bg-muted/40 transition-colors"
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5 min-w-0">
               <Target className="h-4 w-4 text-blue-500 shrink-0" />
-              <span className="text-sm font-semibold text-foreground">
+              <span className="text-sm font-semibold text-foreground shrink-0">
                 Tarefa Solicitada
               </span>
               {report.objetivo && (
-                <span className="hidden sm:inline text-xs text-muted-foreground truncate max-w-xs">
+                <span className="hidden sm:inline text-xs text-muted-foreground truncate">
                   — {report.objetivo}
                 </span>
               )}
             </div>
-            {taskOpen ? (
-              <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
-            ) : (
-              <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
-            )}
+            {taskOpen
+              ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
+              : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+            }
           </button>
           {taskOpen && (
-            <div className="px-4 pb-4 pt-0 border-t border-border/50 bg-muted/20">
+            <div className="px-4 pb-5 pt-0 border-t border-border/50 bg-blue-50/40 dark:bg-blue-950/10">
               {report.objetivo && (
-                <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide mt-3 mb-1.5">
-                  Objetivo
-                </p>
-              )}
-              {report.objetivo && (
-                <p className="text-sm text-foreground font-medium mb-3">
-                  {report.objetivo}
-                </p>
+                <>
+                  <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mt-4 mb-1">
+                    Objetivo
+                  </p>
+                  <p className="text-sm text-foreground font-semibold mb-3 leading-snug">
+                    {report.objetivo}
+                  </p>
+                </>
               )}
               {report.taskDescription && (
                 <>
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mb-1.5">
                     Descrição da Tarefa
                   </p>
                   <p className="text-sm text-muted-foreground leading-relaxed">
@@ -292,56 +332,59 @@ function ReportView({ report }: { report: ParsedReport }) {
         </Card>
       )}
 
-      {/* ── METRIC CARDS ─────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+      {/* ── MÉTRICAS ─────────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {[
           {
             label: "Objetivo",
             value: report.completionStatus ?? "—",
             color: completionCfg?.color ?? "text-foreground",
             icon: Target,
+            accent: "border-t-blue-400",
             iconColor: "text-blue-500",
+            small: true,
           },
           {
-            label: "Tempo Estimado",
+            label: "Tempo",
             value: report.timeEstimate || "—",
             color: "text-foreground",
             icon: Clock,
+            accent: "border-t-purple-400",
             iconColor: "text-purple-500",
             small: true,
           },
           {
-            label: "Pontos Positivos",
+            label: "Positivos",
             value: String(report.positiveFindings.length),
-            color: report.positiveFindings.length > 0 ? "text-green-600" : "text-muted-foreground",
+            color: report.positiveFindings.length > 0 ? "text-green-600 dark:text-green-400" : "text-muted-foreground",
             icon: ThumbsUp,
+            accent: "border-t-green-400",
             iconColor: "text-green-500",
           },
           {
             label: "Fricções",
             value: String(report.frictions.length),
-            color: "text-amber-600",
+            color: "text-amber-600 dark:text-amber-400",
             icon: AlertTriangle,
+            accent: "border-t-amber-400",
             iconColor: "text-amber-500",
           },
           {
             label: "Críticas / Altas",
             value: String(criticalCount),
-            color: criticalCount > 0 ? "text-red-600" : "text-green-600",
+            color: criticalCount > 0 ? "text-red-600 dark:text-red-400" : "text-green-600",
             icon: BarChart3,
-            iconColor: "text-red-500",
+            accent: criticalCount > 0 ? "border-t-red-500" : "border-t-green-400",
+            iconColor: criticalCount > 0 ? "text-red-500" : "text-green-500",
           },
         ].map((stat) => (
-          <Card key={stat.label} className="shadow-sm">
-            <CardContent className="pt-4 pb-4">
-              <div className="flex items-center gap-1.5 mb-1">
+          <Card key={stat.label} className={`shadow-sm border-t-2 ${stat.accent}`}>
+            <CardContent className="pt-3.5 pb-3.5 px-4">
+              <div className="flex items-center gap-1.5 mb-2">
                 <stat.icon className={`h-3.5 w-3.5 ${stat.iconColor}`} />
-                <p className="text-xs text-muted-foreground">{stat.label}</p>
+                <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">{stat.label}</p>
               </div>
-              <p
-                className={`font-bold ${stat.color} ${stat.small ? "text-base leading-tight" : "text-2xl"}`}
-                title={stat.value}
-              >
+              <p className={`font-bold ${stat.color} ${stat.small ? "text-base leading-tight" : "text-2xl leading-none"}`} title={stat.value}>
                 {stat.value}
               </p>
             </CardContent>
@@ -349,91 +392,83 @@ function ReportView({ report }: { report: ParsedReport }) {
         ))}
       </div>
 
-      {/* ── SEVERITY DISTRIBUTION ────────────────────────────────── */}
+      {/* ── DISTRIBUIÇÃO POR SEVERIDADE ───────────────────────────── */}
       {report.frictions.length > 0 && (
         <Card className="shadow-sm">
-          <CardHeader className="pb-2 pt-4">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <CardContent className="pt-4 pb-4 px-5">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-3.5">
               Distribuição por Severidade
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pb-4 space-y-2.5">
-            {SEV_ORDER.filter((sev) => sevCounts[sev]).map((sev) => {
-              const cfg = getSevConfig(sev);
-              const count = sevCounts[sev] || 0;
-              const pct = Math.round((count / maxCount) * 100);
-              return (
-                <div key={sev} className="flex items-center gap-3">
-                  <span
-                    className={`text-xs font-semibold w-24 shrink-0 ${cfg.text}`}
-                  >
-                    {sev}
-                  </span>
-                  <div className="flex-1 h-2.5 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full transition-all ${cfg.bar}`}
-                      style={{ width: `${Math.max(pct, 8)}%` }}
-                    />
+            </p>
+            <div className="space-y-3">
+              {SEV_ORDER.filter((sev) => sevCounts[sev]).map((sev) => {
+                const cfg = getSevConfig(sev);
+                const count = sevCounts[sev] || 0;
+                const pct = Math.round((count / maxCount) * 100);
+                return (
+                  <div key={sev} className="flex items-center gap-3">
+                    <div className={`h-2 w-2 rounded-full shrink-0 ${cfg.bar}`} />
+                    <span className={`text-xs font-semibold w-24 shrink-0 ${cfg.text}`}>{sev}</span>
+                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${cfg.bar}`}
+                        style={{ width: `${Math.max(pct, 6)}%` }}
+                      />
+                    </div>
+                    <span className={`text-xs font-bold w-5 text-right shrink-0 ${cfg.text}`}>{count}</span>
                   </div>
-                  <span className="text-xs text-muted-foreground w-4 text-right shrink-0 font-medium">
-                    {count}
-                  </span>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </CardContent>
         </Card>
       )}
 
-      {/* ── POSITIVE FINDINGS ──────────────────────────────────── */}
+      {/* ── O QUE FUNCIONA BEM ───────────────────────────────────── */}
       {report.positiveFindings.length > 0 && (
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <ThumbsUp className="h-4 w-4 text-green-500" />
-            <h3 className="text-base font-semibold text-foreground">
-              O Que Funciona Bem
-            </h3>
-            <span className="text-xs text-muted-foreground">
-              ({report.positiveFindings.length} pontos positivos)
-            </span>
-          </div>
-
-          <div className="space-y-3">
+          <SectionLabel
+            icon={ThumbsUp}
+            iconBg="bg-green-100 dark:bg-green-950/40"
+            iconColor="text-green-600 dark:text-green-400"
+            title="O Que Funciona Bem"
+            count={report.positiveFindings.length}
+          />
+          <div className="space-y-2.5">
             {report.positiveFindings.map((pf) => (
               <div
                 key={pf.number}
-                className="rounded-xl border border-l-4 border-l-green-500 shadow-sm overflow-hidden"
+                className="rounded-xl border border-l-4 border-l-green-500 bg-green-50/50 dark:bg-green-950/10 overflow-hidden"
               >
-                <div className="px-4 py-3 bg-green-50 dark:bg-green-950/20">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-xs font-bold text-muted-foreground shrink-0">
-                      #{pf.number}
-                    </span>
-                    <h4 className="text-sm font-semibold text-foreground">
-                      {pf.title}
-                    </h4>
-                    <span className="inline-flex text-xs font-bold px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
-                      POSITIVO
-                    </span>
-                  </div>
-                  {pf.description && (
-                    <p className="text-sm text-muted-foreground mb-2 leading-relaxed">
-                      {pf.description}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
-                    {pf.zone && (
-                      <span className="flex items-center gap-1.5 text-muted-foreground">
-                        <span className="text-base leading-none">📍</span>
-                        <span className="font-medium">{pf.zone}</span>
-                      </span>
-                    )}
-                    {pf.impact && (
-                      <span className="flex items-center gap-1.5 text-green-700 dark:text-green-400">
-                        <span className="text-base leading-none">📈</span>
-                        <span>{pf.impact}</span>
-                      </span>
-                    )}
+                <div className="px-4 py-3.5">
+                  <div className="flex items-start gap-3">
+                    {/* Number badge */}
+                    <div className="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-[11px] font-bold text-white shrink-0 mt-0.5">
+                      {pf.number}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-foreground mb-1">
+                        {stripMd(pf.title)}
+                      </h4>
+                      {pf.description && (
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-2.5">
+                          {stripMd(pf.description)}
+                        </p>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        {pf.zone && (
+                          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-background border text-muted-foreground font-medium">
+                            <MapPin className="h-2.5 w-2.5" />
+                            {stripMd(pf.zone)}
+                          </span>
+                        )}
+                        {pf.impact && (
+                          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 font-medium">
+                            <TrendingUp className="h-2.5 w-2.5" />
+                            {stripMd(pf.impact)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -442,20 +477,18 @@ function ReportView({ report }: { report: ParsedReport }) {
         </div>
       )}
 
-      {/* ── FRICTIONS ────────────────────────────────────────────── */}
+      {/* ── FRICÇÕES IDENTIFICADAS ───────────────────────────────── */}
       {sortedFrictions.length > 0 && (
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle className="h-4 w-4 text-amber-500" />
-            <h3 className="text-base font-semibold text-foreground">
-              Fricções Identificadas
-            </h3>
-            <span className="text-xs text-muted-foreground">
-              ({sortedFrictions.length} · ordenadas por severidade)
-            </span>
-          </div>
-
-          <div className="space-y-3">
+          <SectionLabel
+            icon={AlertTriangle}
+            iconBg="bg-amber-100 dark:bg-amber-950/40"
+            iconColor="text-amber-600 dark:text-amber-400"
+            title="Fricções Identificadas"
+            count={sortedFrictions.length}
+            sub="ordenadas por severidade"
+          />
+          <div className="space-y-2.5">
             {sortedFrictions.map((friction) => {
               const cfg = getSevConfig(friction.severity);
               const isExpanded = expandedFrictions.has(friction.number);
@@ -465,52 +498,55 @@ function ReportView({ report }: { report: ParsedReport }) {
                   key={friction.number}
                   className={`rounded-xl border border-l-4 ${cfg.border} shadow-sm overflow-hidden`}
                 >
-                  {/* Card header — always visible, clickable */}
                   <button
-                    className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-left ${cfg.bg} hover:brightness-95 transition-all`}
+                    className={`w-full flex items-center justify-between gap-3 px-4 py-3.5 text-left ${cfg.bg} hover:brightness-95 transition-all`}
                     onClick={() => toggleFriction(friction.number)}
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="text-xs font-bold text-muted-foreground shrink-0">
-                        #{friction.number}
-                      </span>
-                      <h4 className="text-sm font-semibold text-foreground truncate">
-                        {friction.title}
-                      </h4>
+                      {/* Severity number circle */}
+                      <div className={`h-6 w-6 rounded-full ${cfg.bar} flex items-center justify-center text-[11px] font-bold text-white shrink-0`}>
+                        {friction.number}
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-sm font-semibold text-foreground truncate">
+                          {stripMd(friction.title)}
+                        </h4>
+                        {!isExpanded && friction.zone && (
+                          <p className="text-xs text-muted-foreground mt-0.5 truncate">
+                            {stripMd(friction.zone)}
+                          </p>
+                        )}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span
-                        className={`inline-flex text-xs font-bold px-2.5 py-0.5 rounded-full ${cfg.badge}`}
-                      >
+                      <span className={`inline-flex text-[11px] font-bold px-2.5 py-0.5 rounded-full ${cfg.badge}`}>
                         {friction.severity}
                       </span>
-                      {isExpanded ? (
-                        <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
-                      ) : (
-                        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                      )}
+                      {isExpanded
+                        ? <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
+                        : <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                      }
                     </div>
                   </button>
 
-                  {/* Expanded body */}
                   {isExpanded && (
-                    <div className="px-4 py-3 bg-background border-t border-border/50">
+                    <div className="px-4 py-4 bg-background border-t border-border/50">
                       {friction.description && (
-                        <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
-                          {friction.description}
+                        <p className="text-sm text-muted-foreground mb-3.5 leading-relaxed">
+                          {stripMd(friction.description)}
                         </p>
                       )}
-                      <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+                      <div className="flex flex-wrap gap-2">
                         {friction.zone && (
-                          <span className="flex items-center gap-1.5 text-muted-foreground">
-                            <span className="text-base leading-none">📍</span>
-                            <span className="font-medium">{friction.zone}</span>
+                          <span className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border bg-muted/50 text-muted-foreground font-medium">
+                            <MapPin className="h-2.5 w-2.5" />
+                            {stripMd(friction.zone)}
                           </span>
                         )}
                         {friction.impact && (
-                          <span className="flex items-center gap-1.5 text-muted-foreground">
-                            <span className="text-base leading-none">📉</span>
-                            <span>{friction.impact}</span>
+                          <span className={`inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium ${cfg.badge}`}>
+                            <TrendingDown className="h-2.5 w-2.5" />
+                            {stripMd(friction.impact)}
                           </span>
                         )}
                       </div>
@@ -523,81 +559,100 @@ function ReportView({ report }: { report: ParsedReport }) {
         </div>
       )}
 
-      {/* ── CONFUSION QUOTES ─────────────────────────────────────── */}
+      {/* ── CITAÇÕES DA PERSONA ───────────────────────────────────── */}
       {report.confusionQuotes.length > 0 && (
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <Quote className="h-4 w-4 text-blue-500" />
-            <h3 className="text-base font-semibold text-foreground">
-              Citações da Persona
-            </h3>
-          </div>
-          <div className="space-y-3">
+          <SectionLabel
+            icon={Quote}
+            iconBg="bg-blue-100 dark:bg-blue-950/40"
+            iconColor="text-blue-600 dark:text-blue-400"
+            title="Voz da Persona"
+            count={report.confusionQuotes.length}
+          />
+          <div className="space-y-2.5">
             {report.confusionQuotes.map((q, i) => (
               <div
                 key={i}
-                className="rounded-xl border bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900 p-4"
+                className="rounded-xl border border-blue-200 dark:border-blue-900 bg-blue-50/50 dark:bg-blue-950/10 p-4"
               >
-                {q.context && (
-                  <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-2 uppercase tracking-wide">
-                    {q.context}
-                  </p>
-                )}
-                <blockquote className="text-sm text-foreground italic leading-relaxed border-l-4 border-blue-400 pl-3">
-                  "{q.quote}"
-                </blockquote>
+                <div className="flex items-start gap-3">
+                  {/* Persona initial avatar */}
+                  <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-sm font-bold text-white shrink-0 mt-0.5">
+                    {report.personaName.charAt(0) || "?"}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    {q.context && (
+                      <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1.5">
+                        {q.context}
+                      </p>
+                    )}
+                    <blockquote className="text-sm text-foreground italic leading-relaxed">
+                      "{q.quote}"
+                    </blockquote>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* ── EXECUTIVE SUMMARY ────────────────────────────────────── */}
+      {/* ── RESUMO EXECUTIVO ─────────────────────────────────────── */}
       {report.executiveSummary && (
-        <Card className="shadow-sm">
-          <CardHeader className="pb-2 pt-4">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
-              Resumo Executivo
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pb-4">
-            <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-              {report.executiveSummary}
-            </p>
-          </CardContent>
-        </Card>
+        <div>
+          <SectionLabel
+            icon={FileText}
+            iconBg="bg-slate-100 dark:bg-slate-800"
+            iconColor="text-slate-600 dark:text-slate-400"
+            title="Resumo Executivo"
+          />
+          <Card className="shadow-sm">
+            <CardContent className="pt-4 pb-5 px-5">
+              <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                {stripMd(report.executiveSummary)}
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
-      {/* ── RECOMMENDATION ───────────────────────────────────────── */}
+      {/* ── RECOMENDAÇÃO ─────────────────────────────────────────── */}
       {report.recommendations && (
-        <Card className="shadow-sm bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800">
-          <CardHeader className="pb-2 pt-4">
-            <CardTitle className="text-sm font-semibold text-blue-800 dark:text-blue-300 flex items-center gap-2">
-              <Lightbulb className="h-4 w-4" />
-              Recomendação
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pb-4">
-            <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed whitespace-pre-line">
-              {report.recommendations}
-            </p>
+        <Card className="shadow-sm border-l-4 border-l-blue-500 bg-gradient-to-r from-blue-50 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-950/20">
+          <CardContent className="pt-4 pb-5 px-5">
+            <div className="flex items-start gap-3">
+              <div className="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
+                <Lightbulb className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest mb-1.5">
+                  Recomendação Prioritária
+                </p>
+                <p className="text-sm text-foreground leading-relaxed">
+                  {stripMd(report.recommendations)}
+                </p>
+              </div>
+            </div>
           </CardContent>
         </Card>
       )}
 
-      {/* ── OVERALL IMPACT ───────────────────────────────────────── */}
+      {/* ── IMPACTO GLOBAL ───────────────────────────────────────── */}
       {report.overallImpact && (
-        <Card className="shadow-sm bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/30 border-red-200 dark:border-red-900">
-          <CardContent className="pt-4 pb-4 flex items-start gap-3">
-            <TrendingDown className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-xs font-semibold text-red-600 dark:text-red-400 mb-0.5 uppercase tracking-wide">
-                Impacto Global na Conversão
-              </p>
-              <p className="text-sm text-red-800 dark:text-red-300 font-medium">
-                {report.overallImpact}
-              </p>
+        <Card className="shadow-sm border-l-4 border-l-red-500 bg-gradient-to-r from-red-50 to-orange-50/50 dark:from-red-950/30 dark:to-orange-950/20">
+          <CardContent className="pt-4 pb-5 px-5">
+            <div className="flex items-start gap-3">
+              <div className="h-8 w-8 rounded-lg bg-red-100 dark:bg-red-900/40 flex items-center justify-center shrink-0">
+                <TrendingDown className="h-4 w-4 text-red-600 dark:text-red-400" />
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1.5">
+                  Impacto Global na Conversão
+                </p>
+                <p className="text-sm text-foreground font-medium leading-relaxed">
+                  {report.overallImpact}
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>

@@ -305,9 +305,10 @@ export function parseReport(rawText: string): ParsedReport | null {
     /RESUMO EXECUTIVO\s*\n([\s\S]*?)(?=\n\s*#{1,3}|\n\s*\d+\.\s*Recomenda|Recomenda|Impacto global|$)/i
   );
   if (resumoMatch) {
-    // Remove any trailing heading fragments (e.g. "## 7.")
+    // Remove any trailing heading fragments (e.g. "## 7.") and --- separators
     executiveSummary = resumoMatch[1]
       .replace(/\n\s*#{1,3}[^\n]*$/, "")
+      .replace(/\s*---\s*$/g, "")
       .trim()
       .slice(0, 1500);
   }
@@ -316,7 +317,11 @@ export function parseReport(rawText: string): ParsedReport | null {
     /Recomenda[çc][aã]o[^\n]*\n+([\s\S]*?)(?=\n\s*#{1,3}|\n\s*\d+\.\s*Impacto|Impacto global|$)/i
   );
   if (recMatch) {
-    recommendations = recMatch[1].replace(/\n\s*#{1,3}[^\n]*$/, "").trim().slice(0, 600);
+    recommendations = recMatch[1]
+      .replace(/\n\s*#{1,3}[^\n]*$/, "")
+      .replace(/\s*---\s*$/g, "")
+      .trim()
+      .slice(0, 600);
   }
 
   // Allow blank line(s) between heading and content
