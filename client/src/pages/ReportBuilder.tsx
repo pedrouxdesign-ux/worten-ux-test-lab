@@ -44,13 +44,21 @@ const SEV_CONFIG: Record<
   { border: string; bg: string; text: string; badge: string; bar: string }
 > = {
   CRÍTICO: {
-    border: "border-l-red-500",
+    border: "border-l-red-600",
     bg: "bg-red-50 dark:bg-red-950/20",
-    text: "text-red-700 dark:text-red-400",
-    badge: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
-    bar: "bg-red-500",
+    text: "text-red-800 dark:text-red-400",
+    badge: "bg-red-100 text-red-900 dark:bg-red-900/40 dark:text-red-300",
+    bar: "bg-red-600",
   },
   ALTO: {
+    border: "border-l-orange-600",
+    bg: "bg-orange-50 dark:bg-orange-950/20",
+    text: "text-orange-800 dark:text-orange-400",
+    badge:
+      "bg-orange-100 text-orange-900 dark:bg-orange-900/40 dark:text-orange-300",
+    bar: "bg-orange-600",
+  },
+  "MÉDIO-ALTO": {
     border: "border-l-orange-500",
     bg: "bg-orange-50 dark:bg-orange-950/20",
     text: "text-orange-700 dark:text-orange-400",
@@ -58,7 +66,7 @@ const SEV_CONFIG: Record<
       "bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300",
     bar: "bg-orange-500",
   },
-  "MÉDIO-ALTO": {
+  MÉDIO: {
     border: "border-l-amber-500",
     bg: "bg-amber-50 dark:bg-amber-950/20",
     text: "text-amber-700 dark:text-amber-400",
@@ -66,7 +74,7 @@ const SEV_CONFIG: Record<
       "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
     bar: "bg-amber-500",
   },
-  MÉDIO: {
+  "BAIXO-MÉDIO": {
     border: "border-l-yellow-500",
     bg: "bg-yellow-50 dark:bg-yellow-950/20",
     text: "text-yellow-700 dark:text-yellow-400",
@@ -74,21 +82,13 @@ const SEV_CONFIG: Record<
       "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300",
     bar: "bg-yellow-500",
   },
-  "BAIXO-MÉDIO": {
-    border: "border-l-blue-400",
-    bg: "bg-blue-50 dark:bg-blue-950/20",
-    text: "text-blue-700 dark:text-blue-400",
-    badge:
-      "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300",
-    bar: "bg-blue-400",
-  },
   BAIXO: {
-    border: "border-l-green-500",
-    bg: "bg-green-50 dark:bg-green-950/20",
-    text: "text-green-700 dark:text-green-400",
+    border: "border-l-yellow-400",
+    bg: "bg-yellow-50 dark:bg-yellow-950/20",
+    text: "text-yellow-700 dark:text-yellow-400",
     badge:
-      "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
-    bar: "bg-green-500",
+      "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300",
+    bar: "bg-yellow-400",
   },
 };
 
