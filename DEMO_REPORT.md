@@ -7,7 +7,7 @@
 **Pesquisa e Filtro de Produto Técnico**
 
 Descrição da tarefa:
-Realize uma pesquisa de um produto técnico (smartphone de gama alta) e aplique filtros avançados (marca, preço, especificações) para encontrar exatamente o produto que procura. Complete a jornada até à página de detalhes do produto escolhido, verificando se todas as informações técnicas estão claras e acessíveis.
+Simule um cenário de compra no qual você, como utilizadora tech-savvy, precisa de encontrar um smartphone de gama alta que atenda a critérios específicos: marca reconhecida (Samsung ou Apple), orçamento entre €800-1200, e especificações técnicas mínimas (RAM mínimo 12GB, armazenamento mínimo 256GB, taxa de refresh mínimo 120Hz). Inicie uma pesquisa na barra de pesquisa principal, navegue pelos resultados, aplique sequencialmente os filtros avançados de marca, preço e especificações técnicas, compare visualmente os produtos disponíveis e, finalmente, aceda à página de detalhes do smartphone escolhido. Durante todo o processo, avalie a clareza da interface, a intuitibilidade dos filtros, a organização das informações técnicas, a qualidade dos resultados apresentados e a facilidade de navegação entre categorias. Identifique pontos fortes na experiência de utilizador e também áreas de friction que dificultam a conclusão da tarefa.
 
 Categoria: Catálogo · Objetivo: Pesquisar e filtrar produtos técnicos de forma intuitiva · 5 steps
 
