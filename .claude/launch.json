@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Dev Server",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["dev"],
+      "port": 3000,
+      "description": "Development server with Vite and tsx watch"
+    },
+    {
+      "name": "Type Check",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["check"],
+      "port": null,
+      "description": "TypeScript type checking"
+    },
+    {
+      "name": "Tests",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["test"],
+      "port": null,
+      "description": "Run Vitest tests"
+    }
+  ]
+}

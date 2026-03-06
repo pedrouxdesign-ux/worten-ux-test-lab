@@ -28,6 +28,7 @@ export type ParsedReport = {
   personaName: string;
   personaSubtitle: string;
   scenarioName: string;
+  taskDescription: string;
   category: string;
   objetivo: string;
   stepsCount: number | null;
@@ -114,6 +115,7 @@ export function parseReport(rawText: string): ParsedReport | null {
 
   // ─── 2. SCENARIO ────────────────────────────────────────────────
   let scenarioName = "";
+  let taskDescription = "";
   let category = "";
   let objetivo = "";
 
@@ -123,6 +125,14 @@ export function parseReport(rawText: string): ParsedReport | null {
   if (tarefaSection) {
     const body = tarefaSection[1].trim();
     scenarioName = body.split("\n")[0].replace(/\*\*/g, "").trim();
+    const descMatch = body.match(/Descrição da tarefa[^:\n]*:?\s*\n?([^\n]+(?:\n(?![*\-•\s*\w+:][*\-•]?\s*\w+:)[^\n]+)*)/i);
+    if (descMatch) {
+      taskDescription = descMatch[1]
+        .replace(/^[*\-•\s]+/gm, "")
+        .trim()
+        .replace(/\n/g, " ")
+        .slice(0, 500);
+    }
     const catMatch = body.match(/Categoria:\s*([^·•\n]+)/i);
     if (catMatch) category = catMatch[1].trim();
     const objMatch = body.match(/Objetivo:\s*([^\n]+)/i);
@@ -321,6 +331,7 @@ export function parseReport(rawText: string): ParsedReport | null {
     personaName,
     personaSubtitle,
     scenarioName,
+    taskDescription,
     category,
     objetivo,
     stepsCount,

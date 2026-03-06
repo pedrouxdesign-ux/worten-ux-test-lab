@@ -197,6 +197,11 @@ function ReportView({ report }: { report: ParsedReport }) {
                 <p className="text-sm text-slate-300 font-medium mb-1.5">
                   {report.scenarioName || "Cenário não detectado"}
                 </p>
+                {report.taskDescription && (
+                  <p className="text-xs text-slate-400 mb-2 leading-relaxed">
+                    {report.taskDescription}
+                  </p>
+                )}
                 <div className="flex flex-wrap items-center gap-2">
                   {report.category && (
                     <span className="inline-flex text-xs px-2 py-0.5 rounded-full bg-white/10 text-slate-200">
