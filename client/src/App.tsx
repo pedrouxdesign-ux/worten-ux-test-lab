@@ -4,7 +4,12 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import AddPersona from "./pages/AddPersona";
 import Dashboard from "./pages/Dashboard";
+import UsersManagement from "./pages/UsersManagement";
+import ScenariosManagement from "./pages/ScenariosManagement";
+import TestsHistory from "./pages/TestsHistory";
+import ReportBuilder from "./pages/ReportBuilder";
 import SubmitTest from "./pages/SubmitTest";
 import TestResults from "./pages/TestResults";
 import SkillsManagement from "./pages/SkillsManagement";
@@ -31,10 +36,15 @@ function Router() {
   // Em produção, remova este comentário para exigir autenticação
   return (
     <Switch>
-      <Route path="" component={Dashboard} />
+      <Route path="/" component={Dashboard} />
       <Route path="/submit" component={SubmitTest} />
       <Route path="/test-flow" component={TestFlow} />
       <Route path="/test/:id" component={TestResults} />
+      <Route path="/add-persona" component={AddPersona} />
+      <Route path="/users" component={UsersManagement} />
+      <Route path="/scenarios" component={ScenariosManagement} />
+      <Route path="/tests" component={TestsHistory} />
+      <Route path="/reports" component={ReportBuilder} />
       <Route path="/skills" component={SkillsManagement} />
       <Route path="/export/:id" component={ExportReport} />
       <Route path="/404" component={NotFound} />
@@ -46,7 +56,7 @@ function Router() {
   // if (!user) {
   //   return (
   //     <Switch>
-  //       <Route path="" component={Dashboard} />
+  //       <Route path="/" component={Dashboard} />
   //       <Route component={NotFound} />
   //     </Switch>
   //   );
