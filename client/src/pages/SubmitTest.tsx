@@ -192,7 +192,7 @@ export default function SubmitTest() {
                   onClick={() => navigate("/")}
                   disabled={isSubmitting || isExecuting}
                 >
-                  Cancelar
+                  Voltar ao Dashboard
                 </Button>
               </div>
 
