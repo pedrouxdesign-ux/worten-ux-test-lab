@@ -143,6 +143,7 @@ function ReportView({ report }: { report: ParsedReport }) {
   const [expandedFrictions, setExpandedFrictions] = useState<Set<number>>(
     new Set(report.frictions.map((f) => f.number))
   );
+  const [taskOpen, setTaskOpen] = useState(false);
 
   const toggleFriction = (n: number) => {
     setExpandedFrictions((prev) => {
@@ -197,11 +198,6 @@ function ReportView({ report }: { report: ParsedReport }) {
                 <p className="text-sm text-slate-300 font-medium mb-1.5">
                   {report.scenarioName || "Cenário não detectado"}
                 </p>
-                {report.taskDescription && (
-                  <p className="text-xs text-slate-400 mb-2 leading-relaxed">
-                    {report.taskDescription}
-                  </p>
-                )}
                 <div className="flex flex-wrap items-center gap-2">
                   {report.category && (
                     <span className="inline-flex text-xs px-2 py-0.5 rounded-full bg-white/10 text-slate-200">
@@ -244,6 +240,57 @@ function ReportView({ report }: { report: ParsedReport }) {
           </div>
         </div>
       </Card>
+
+      {/* ── TASK DESCRIPTION COLLAPSIBLE ─────────────────────────── */}
+      {(report.taskDescription || report.objetivo) && (
+        <Card className="shadow-sm overflow-hidden">
+          <button
+            onClick={() => setTaskOpen((v) => !v)}
+            className="w-full flex items-center justify-between gap-3 px-4 py-3 text-left hover:bg-muted/50 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Target className="h-4 w-4 text-blue-500 shrink-0" />
+              <span className="text-sm font-semibold text-foreground">
+                Tarefa Solicitada
+              </span>
+              {report.objetivo && (
+                <span className="hidden sm:inline text-xs text-muted-foreground truncate max-w-xs">
+                  — {report.objetivo}
+                </span>
+              )}
+            </div>
+            {taskOpen ? (
+              <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+            )}
+          </button>
+          {taskOpen && (
+            <div className="px-4 pb-4 pt-0 border-t border-border/50 bg-muted/20">
+              {report.objetivo && (
+                <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide mt-3 mb-1.5">
+                  Objetivo
+                </p>
+              )}
+              {report.objetivo && (
+                <p className="text-sm text-foreground font-medium mb-3">
+                  {report.objetivo}
+                </p>
+              )}
+              {report.taskDescription && (
+                <>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">
+                    Descrição da Tarefa
+                  </p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {report.taskDescription}
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* ── METRIC CARDS ─────────────────────────────────────────── */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
