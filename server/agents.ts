@@ -237,67 +237,7 @@ Forneça a resposta em formato JSON com a seguinte estrutura:
       },
     ],
     response_format: {
-      type: "json_schema",
-      json_schema: {
-        name: "ux_analysis",
-        strict: true,
-        schema: {
-          type: "object",
-          properties: {
-            executiveSummary: {
-              type: "string",
-              description: "Sumário executivo dos principais problemas",
-            },
-            detailedAnalysis: {
-              type: "string",
-              description: "Análise detalhada por persona",
-            },
-            usabilityDiagnosis: {
-              type: "string",
-              description: "Diagnóstico de usabilidade com heurísticas",
-            },
-            competitiveBenchmark: {
-              type: "string",
-              description: "Análise competitiva",
-            },
-            recommendations: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  priority: {
-                    type: "string",
-                    enum: ["P1", "P2", "P3"],
-                    description: "Prioridade da recomendação",
-                  },
-                  title: {
-                    type: "string",
-                    description: "Título da recomendação",
-                  },
-                  description: {
-                    type: "string",
-                    description: "Descrição detalhada",
-                  },
-                  justification: {
-                    type: "string",
-                    description: "Justificação baseada em dados",
-                  },
-                },
-                required: ["priority", "title", "description"],
-                additionalProperties: false,
-              },
-              description: "Lista de recomendações priorizadas",
-            },
-          },
-          required: [
-            "executiveSummary",
-            "detailedAnalysis",
-            "usabilityDiagnosis",
-            "recommendations",
-          ],
-          additionalProperties: false,
-        },
-      },
+      type: "json_object",
     },
   });
 

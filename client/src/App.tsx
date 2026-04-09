@@ -5,6 +5,8 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import AddPersona from "./pages/AddPersona";
+import EditScenario from "./pages/EditScenario";
+import AddScenario from "./pages/AddScenario";
 import Dashboard from "./pages/Dashboard";
 import UsersManagement from "./pages/UsersManagement";
 import ScenariosManagement from "./pages/ScenariosManagement";
@@ -41,6 +43,8 @@ function Router() {
       <Route path="/test-flow" component={TestFlow} />
       <Route path="/test/:id" component={TestResults} />
       <Route path="/add-persona" component={AddPersona} />
+      <Route path="/scenarios/new" component={AddScenario} />
+      <Route path="/scenarios/:id/edit" component={EditScenario} />
       <Route path="/users" component={UsersManagement} />
       <Route path="/scenarios" component={ScenariosManagement} />
       <Route path="/tests" component={TestsHistory} />

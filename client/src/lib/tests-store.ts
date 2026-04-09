@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Persona } from "@/pages/UsersManagement";
-import type { Scenario } from "@/pages/ScenariosManagement";
+import type { Scenario } from "@/lib/scenario";
 
 export type StoredTest = {
   id: string;

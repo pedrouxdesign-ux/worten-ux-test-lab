@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -14,146 +15,14 @@ import {
   ClipboardList,
 } from "lucide-react";
 
-export type TechLevel = "Alto" | "Médio" | "Básico";
-
-export type Scenario = {
-  id: number;
-  titulo: string;
-  objetivo: string;
-  nivelTecnico: TechLevel;
-  frustracoesTipicas: string[];
-  instrucoes: string;
-  estruturaRelatorio: string[];
-  categoria: string;
-};
-
-const defaultScenarios: Scenario[] = [
-  {
-    id: 1,
-    titulo: "Verificar Stock em Loja Física na PDP",
-    objetivo:
-      "Aceder à PDP do produto e confirmar se está disponível em stock numa loja física — sem sair da página.",
-    nivelTecnico: "Alto",
-    frustracoesTipicas: [
-      "Stock implícito (ex: 'Disponível' sem indicar onde)",
-      "CTAs ambíguos ('Ver disponibilidade' vs 'Reservar')",
-      "Pop-ups intrusivos que interrompem a navegação",
-      "Preços inconsistentes entre variantes do produto",
-    ],
-    instrucoes: `Acede à página do produto indicado e tenta completar a tarefa.
-- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
-- Navega como farias normalmente, sem preocupações em "acertar"
-- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
-    estruturaRelatorio: [
-      "Clareza da informação de stock na PDP (visibilidade, localização, formato)",
-      "Eficácia dos CTAs de disponibilidade (claro vs ambíguo)",
-      "Qualidade da experiência mobile vs desktop na consulta de stock",
-      "Consistência de preços e informação entre variantes do produto",
-      "Tempo estimado até encontrar a informação de stock em loja",
-    ],
-    categoria: "Disponibilidade & Stock",
-  },
-  {
-    id: 2,
-    titulo: "Processo de Devolução Online",
-    objetivo:
-      "Iniciar e completar um pedido de devolução de um produto comprado há 10 dias, sem contactar o apoio ao cliente.",
-    nivelTecnico: "Médio",
-    frustracoesTipicas: [
-      "Processo de devolução escondido em menus secundários",
-      "Linguagem técnica e jurídica confusa",
-      "Necessidade de imprimir etiqueta sem impressora disponível",
-      "Falta de feedback sobre o estado da devolução",
-    ],
-    instrucoes: `Acede à tua área de cliente e tenta completar a tarefa.
-- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
-- Navega como farias normalmente, sem preocupações em "acertar"
-- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
-    estruturaRelatorio: [
-      "Facilidade de encontrar o processo de devolução (quantos cliques, onde procurou)",
-      "Clareza da linguagem jurídica/técnica — termos compreensíveis vs confusos",
-      "Qualidade do feedback em cada passo (progresso, confirmações, próximos passos)",
-      "Acessibilidade de alternativas (etiqueta digital, devolução em loja, recolha)",
-      "Nível de confiança durante o processo: sentiu que ia funcionar?",
-    ],
-    categoria: "Pós-Venda & Suporte",
-  },
-  {
-    id: 3,
-    titulo: "Pesquisa e Filtro de Produto Técnico",
-    objetivo:
-      "Encontrar um portátil com especificações técnicas precisas (RAM ≥ 16GB, GPU dedicada, ecrã ≥ 15\") usando apenas a pesquisa e filtros do site.",
-    nivelTecnico: "Alto",
-    frustracoesTipicas: [
-      "Filtros insuficientes ou com categorias erradas",
-      "Resultados que não correspondem aos filtros aplicados",
-      "Especificações técnicas incompletas ou vagas nas fichas",
-      "Falta de comparação lado a lado de produtos",
-    ],
-    instrucoes: `Começa na página inicial do site e tenta completar a tarefa.
-- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
-- Navega como farias normalmente, sem preocupações em "acertar"
-- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
-    estruturaRelatorio: [
-      "Eficácia da barra de pesquisa (autocompletar, sugestões, relevância dos resultados)",
-      "Filtros existentes vs filtros desejados que não existiam",
-      "Qualidade e completude das especificações técnicas nas fichas de produto",
-      "Capacidade de comparação entre produtos (funcionalidades, layout, informação)",
-      "Tempo total de pesquisa até encontrar produto adequado",
-    ],
-    categoria: "Pesquisa & Descoberta",
-  },
-  {
-    id: 4,
-    titulo: "Checkout e Finalização de Compra",
-    objetivo:
-      "Completar uma compra de um produto já no carrinho, usando um método de pagamento guardado, com entrega ao domicílio.",
-    nivelTecnico: "Básico",
-    frustracoesTipicas: [
-      "Campos de formulário confusos ou mal validados",
-      "Surpresas de custo no final (portes, taxas ocultas)",
-      "Múltiplos redirects ou janelas de confirmação desnecessárias",
-      "Falta de confirmação clara após compra concluída",
-    ],
-    instrucoes: `Parte do carrinho já preenchido com o produto e tenta completar a tarefa.
-- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
-- Navega como farias normalmente, sem preocupações em "acertar"
-- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
-    estruturaRelatorio: [
-      "Número de ecrãs/passos no checkout e se é adequado",
-      "Transparência total dos custos (portes, taxas, descontos — surpresas vs clareza)",
-      "Qualidade da validação de formulários (mensagens de erro, ajuda contextual)",
-      "Qualidade da confirmação de compra (informação clara, próximos passos, confiança)",
-      "Fluidez geral do fluxo — onde hesitou e onde foi intuitivo",
-    ],
-    categoria: "Checkout & Conversão",
-  },
-  {
-    id: 5,
-    titulo: "Ativação de Garantia e Serviço Pós-Venda",
-    objetivo:
-      "Encontrar e acionar a garantia de um produto comprado há 6 meses que apresenta defeito, sem ir à loja física.",
-    nivelTecnico: "Básico",
-    frustracoesTipicas: [
-      "Terminologia confusa ('Serviços Pós-Venda', 'RMA', 'Reparação')",
-      "Falta de visibilidade do estado de reparação em tempo real",
-      "Necessidade de documentos físicos (fatura em papel)",
-      "Chatbots que não resolvem e não oferecem escalada para humano",
-    ],
-    instrucoes: `Começa na página inicial do site e tenta completar a tarefa.
-- Pensa em voz alta durante toda a navegação — descreve o que vês e o que fazes
-- Navega como farias normalmente, sem preocupações em "acertar"
-- Se não souberes o que fazer a seguir, diz em voz alta e continua a explorar`,
-    estruturaRelatorio: [
-      "Facilidade de encontrar a secção de garantia (cliques, navegação, clareza do menu)",
-      "Clareza da linguagem: termos compreensíveis vs jargão técnico ('RMA', 'Pós-Venda')",
-      "Qualidade do formulário de garantia (campos claros, ajuda contextual, progresso)",
-      "Alternativas oferecidas (chat, telefone, loja física) e acessibilidade de cada uma",
-      "Confiança global no processo: sentiu que o pedido ia ser tratado?",
-    ],
-    categoria: "Pós-Venda & Suporte",
-  },
-];
+import defaultScenarios, { Scenario, TechLevel } from "@/lib/scenario";
+import { useScenariosStore } from "@/lib/scenarios-store";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import * as Dialog from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 const techColors: Record<TechLevel, string> = {
   Alto: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
@@ -174,8 +43,29 @@ export default function ScenariosManagement() {
   const [, navigate] = useLocation();
   const { theme, toggleTheme } = useTheme();
 
-  const categories = [...new Set(defaultScenarios.map(s => s.categoria))];
-  const byLevel = (l: TechLevel) => defaultScenarios.filter(s => s.nivelTecnico === l).length;
+  const { scenarios, addScenario, updateScenario, removeScenario } = useScenariosStore();
+  const categories = [...new Set(scenarios.map(s => s.categoria))];
+  const byLevel = (l: TechLevel) => scenarios.filter(s => s.nivelTecnico === l).length;
+  const handleCreate = (payload: Omit<Scenario, "id">) => {
+    addScenario(payload);
+    toast.success("Cenário criado");
+  };
+
+  const [deleteId, setDeleteId] = React.useState<number | null>(null);
+  const [deleteOpen, setDeleteOpen] = React.useState(false);
+
+  const handleRemove = (id: number) => {
+    setDeleteId(id);
+    setDeleteOpen(true);
+  };
+
+  const confirmRemove = () => {
+    if (deleteId == null) return;
+    removeScenario(deleteId);
+    setDeleteId(null);
+    setDeleteOpen(false);
+    toast.success('Cenário eliminado');
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -197,12 +87,25 @@ export default function ScenariosManagement() {
             <Button onClick={toggleTheme} variant="outline" size="icon" aria-label="Toggle theme">
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
-            <Button className="bg-blue-600 hover:bg-blue-700">
+
+            <Button className="bg-blue-600 hover:bg-blue-700" onClick={() => navigate("/scenarios/new") }>
               <Plus className="h-4 w-4 mr-2" />
               Novo Cenário
             </Button>
           </div>
         </div>
+        <Dialog.Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+          <Dialog.DialogContent>
+            <Dialog.DialogHeader>
+              <Dialog.DialogTitle>Eliminar Cenário</Dialog.DialogTitle>
+              <Dialog.DialogDescription>Tem a certeza que pretende eliminar este cenário? Esta ação não pode ser desfeita.</Dialog.DialogDescription>
+            </Dialog.DialogHeader>
+            <div className="flex justify-end gap-2 mt-4">
+              <Button variant="outline" onClick={() => setDeleteOpen(false)}>Cancelar</Button>
+              <Button className="bg-destructive hover:bg-destructive/90" onClick={confirmRemove}>Eliminar</Button>
+            </div>
+          </Dialog.DialogContent>
+        </Dialog.Dialog>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
@@ -228,7 +131,7 @@ export default function ScenariosManagement() {
 
         {/* Scenarios list */}
         <div className="grid grid-cols-1 gap-4">
-          {defaultScenarios.map(scenario => (
+          {scenarios.map(scenario => (
             <Card key={scenario.id} className="shadow-sm hover:shadow-md transition-shadow">
               <CardContent className="pt-5 pb-5">
                 <div className="flex items-start justify-between gap-4">
@@ -278,7 +181,7 @@ export default function ScenariosManagement() {
 
                   {/* Actions */}
                   <div className="flex flex-col gap-2 shrink-0">
-                    <Button variant="outline" size="icon" className="h-8 w-8" aria-label="Editar">
+                    <Button variant="outline" size="icon" className="h-8 w-8" aria-label="Editar" onClick={() => navigate(`/scenarios/${scenario.id}/edit`)}>
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
                     <Button
@@ -286,6 +189,7 @@ export default function ScenariosManagement() {
                       size="icon"
                       className="h-8 w-8 hover:text-destructive hover:border-destructive"
                       aria-label="Eliminar"
+                      onClick={() => handleRemove(scenario.id)}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
@@ -297,5 +201,109 @@ export default function ScenariosManagement() {
         </div>
       </div>
     </div>
+  );
+}
+
+function CreateScenarioForm({ onCreate, onCancel }: { onCreate: (s: Omit<Scenario, "id">) => void; onCancel: () => void; }) {
+  const [titulo, setTitulo] = React.useState("");
+  const [objetivo, setObjetivo] = React.useState("");
+  const [nivelTecnico, setNivelTecnico] = React.useState<TechLevel>("Médio");
+  const [categoria, setCategoria] = React.useState("");
+  const [instrucoes, setInstrucoes] = React.useState("");
+  const [frustracoes, setFrustracoes] = React.useState<string[]>([""]);
+  const [estrutura, setEstrutura] = React.useState<string[]>([""]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!titulo.trim() || !objetivo.trim()) {
+      toast.error("Título e objetivo são obrigatórios");
+      return;
+    }
+
+    const payload: Omit<Scenario, "id"> = {
+      titulo: titulo.trim(),
+      objetivo: objetivo.trim(),
+      nivelTecnico,
+      categoria: categoria.trim() || "Geral",
+      instrucoes: instrucoes.trim(),
+      frustracoesTipicas: frustracoes,
+      estruturaRelatorio: estrutura,
+    };
+
+    onCreate(payload);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="titulo">Título</Label>
+        <Input id="titulo" value={titulo} onChange={e => setTitulo(e.target.value)} required />
+      </div>
+
+      <div>
+        <Label htmlFor="objetivo">Objetivo</Label>
+        <Input id="objetivo" value={objetivo} onChange={e => setObjetivo(e.target.value)} required />
+      </div>
+
+      <div>
+        <Label htmlFor="nivel">Nível Técnico</Label>
+        <Select onValueChange={(v: TechLevel) => setNivelTecnico(v)}>
+          <SelectTrigger>
+            <SelectValue placeholder={nivelTecnico} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="Alto">Alto</SelectItem>
+            <SelectItem value="Médio">Médio</SelectItem>
+            <SelectItem value="Básico">Básico</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div>
+        <Label htmlFor="categoria">Categoria</Label>
+        <Input id="categoria" value={categoria} onChange={e => setCategoria(e.target.value)} />
+      </div>
+
+      <div>
+        <Label htmlFor="instrucoes">Instruções (texto livre)</Label>
+        <Textarea id="instrucoes" value={instrucoes} onChange={e => setInstrucoes(e.target.value)} rows={4} />
+      </div>
+
+      <div>
+        <Label>Frustrações típicas</Label>
+        {frustracoes.map((f, i) => (
+          <div key={i} className="flex gap-2 items-center mb-2">
+            <Input value={f} onChange={e => setFrustracoes(prev => { const u = [...prev]; u[i] = e.target.value; return u; })} placeholder={i === 0 ? "Ex: Informação de stock inconsistente" : "Ex: Outra frustração"} />
+            <Button type="button" variant="ghost" size="icon" onClick={() => setFrustracoes(prev => prev.length > 1 ? prev.filter((_, j) => j !== i) : prev)} disabled={i === 0} className="shrink-0 text-muted-foreground hover:text-destructive">
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+        <Button type="button" variant="outline" size="sm" onClick={() => setFrustracoes(prev => [...prev, ""]) } className="w-full">
+          <Plus className="h-4 w-4 mr-2" /> Adicionar Frustração
+        </Button>
+      </div>
+
+      <div>
+        <Label>Estrutura do relatório</Label>
+        <p className="text-sm text-muted-foreground">Adicione as exigências que devem constar no relatório (pelo menos a primeira).</p>
+        {estrutura.map((item, i) => (
+          <div key={i} className="flex gap-2 items-center mb-2">
+            <Input placeholder={i === 0 ? "Ex: Resumo Executivo" : `Ex: Requisito ${i+1}`} value={item} onChange={e => setEstrutura(prev => { const u = [...prev]; u[i] = e.target.value; return u; })} required={i === 0} />
+            <Button type="button" variant="ghost" size="icon" onClick={() => setEstrutura(prev => prev.length > 1 ? prev.filter((_, j) => j !== i) : prev)} disabled={i === 0} className="shrink-0 text-muted-foreground hover:text-destructive">
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+        <Button type="button" variant="outline" size="sm" onClick={() => setEstrutura(prev => [...prev, ""]) } className="w-full">
+          <Plus className="h-4 w-4 mr-2" /> Adicionar Requisito
+        </Button>
+      </div>
+
+      <div className="flex justify-end gap-2">
+        <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
+        <Button type="submit">Criar Cenário</Button>
+      </div>
+    </form>
   );
 }

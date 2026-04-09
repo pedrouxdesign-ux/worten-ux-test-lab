@@ -16,11 +16,26 @@
 
   <body>
     <div id="root"></div>
+    <!-- debug banner removed -->
     <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+    <script>
+      // Load analytics only when Vite has replaced the placeholders.
+      (function () {
+        var analyticsUrl = '%VITE_ANALYTICS_ENDPOINT%';
+        var analyticsSite = '%VITE_ANALYTICS_WEBSITE_ID%';
+        if (analyticsUrl && !analyticsUrl.includes('%')) {
+          try {
+            var s = document.createElement('script');
+            s.defer = true;
+            s.src = analyticsUrl.replace(/\/+$/, '') + '/umami';
+            s.setAttribute('data-website-id', analyticsSite);
+            document.head.appendChild(s);
+          } catch (e) {
+            console.warn('Failed to load analytics', e);
+          }
+        }
+      })();
+    </script>
   </body>
 
 </html>

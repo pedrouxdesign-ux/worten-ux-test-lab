@@ -237,3 +237,21 @@ export async function assignSkillToAgent(skillId: number, agentName: string) {
     agentName,
   });
 }
+// Ensure local user for local-only mode
+export async function ensureLocalUser() {
+  const db = await getDb();
+  if (!db) return;
+
+  try {
+    await upsertUser({
+      openId: "local_user",
+      name: "Pedro",
+      email: "local@example.com",
+      loginMethod: "local",
+      role: "admin",
+    });
+    console.log("[Database] Local user ensured");
+  } catch (error) {
+    console.error("[Database] Failed to ensure local user:", error);
+  }
+}

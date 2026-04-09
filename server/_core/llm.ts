@@ -126,7 +126,8 @@ const normalizeContentPart = (
   }
 
   if (part.type === "image_url") {
-    return part;
+    console.warn("[LLM] Image content detected but model may not support it, skipping");
+    return { type: "text", text: "[Image content skipped]" };
   }
 
   if (part.type === "file_url") {
@@ -209,14 +210,11 @@ const normalizeToolChoice = (
   return toolChoice;
 };
 
-const resolveApiUrl = () =>
-  ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://forge.manus.im/v1/chat/completions";
+const resolveApiUrl = () => "https://openrouter.ai/api/v1/chat/completions";
 
 const assertApiKey = () => {
-  if (!ENV.forgeApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
+  if (!ENV.openRouterApiKey) {
+    throw new Error("OPENROUTER_API_KEY is not configured");
   }
 };
 
@@ -273,15 +271,38 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     tools,
     toolChoice,
     tool_choice,
-    outputSchema,
-    output_schema,
-    responseFormat,
-    response_format,
   } = params;
 
+  // Convert all messages to ensure no image content
+  const cleanMessages = messages.map(msg => {
+    if (typeof msg.content === 'string') {
+      return msg;
+    }
+
+    // Extract only text from content parts
+    if (Array.isArray(msg.content)) {
+      const textParts = msg.content
+        .filter(part => part.type === 'text')
+        .map(part => (part as TextContent).text);
+
+      if (textParts.length > 0) {
+        return {
+          ...msg,
+          content: textParts.join('\n')
+        };
+      }
+    }
+
+    // Fallback: convert to string
+    return {
+      ...msg,
+      content: String(msg.content)
+    };
+  });
+
   const payload: Record<string, unknown> = {
-    model: "gemini-2.5-flash",
-    messages: messages.map(normalizeMessage),
+    model: ENV.openRouterModel || "minimax/minimax-m2.5:free",
+    messages: cleanMessages,
   };
 
   if (tools && tools.length > 0) {
@@ -296,27 +317,17 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.tool_choice = normalizedToolChoice;
   }
 
-  payload.max_tokens = 32768
-  payload.thinking = {
-    "budget_tokens": 128
-  }
+  payload.max_tokens = 32768;
 
-  const normalizedResponseFormat = normalizeResponseFormat({
-    responseFormat,
-    response_format,
-    outputSchema,
-    output_schema,
-  });
-
-  if (normalizedResponseFormat) {
-    payload.response_format = normalizedResponseFormat;
-  }
+  console.log("[LLM] Payload:", JSON.stringify(payload, null, 2));
 
   const response = await fetch(resolveApiUrl(), {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
+      authorization: `Bearer ${ENV.openRouterApiKey}`,
+      "HTTP-Referer": "http://localhost:3000",
+      "X-Title": "Worten UX Test Lab",
     },
     body: JSON.stringify(payload),
   });

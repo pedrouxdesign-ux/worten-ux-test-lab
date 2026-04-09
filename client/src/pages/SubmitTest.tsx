@@ -9,6 +9,8 @@ import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/_core/hooks/useAuth";
+import { defaultScenarios } from "./ScenariosManagement";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function SubmitTest() {
   const [, navigate] = useLocation();
@@ -16,7 +18,7 @@ export default function SubmitTest() {
   const [isExecuting, setIsExecuting] = useState(false);
   const { user: authUser } = useAuth();
   const user = authUser || { id: 1, name: "Utilizador Demo", email: "demo@worten.pt", role: "user" as const };
-  
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -33,9 +35,23 @@ export default function SubmitTest() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleBaseOnScenario = (scenarioId: string) => {
+    const scenario = defaultScenarios.find(s => s.id === parseInt(scenarioId));
+    if (!scenario) return;
+
+    setFormData({
+      title: `Teste: ${scenario.titulo}`,
+      description: `Baseado no cenário de ${scenario.categoria}. Objetivo: ${scenario.objetivo}`,
+      featureName: scenario.titulo,
+      userTask: scenario.objetivo,
+      context: scenario.instrucoes,
+    });
+    toast.info("Campos preenchidos com base no cenário selecionado");
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.title.trim() || !formData.featureName.trim() || !formData.userTask.trim()) {
       toast.error("Por favor, preencha os campos obrigatórios");
       return;
@@ -54,7 +70,6 @@ export default function SubmitTest() {
 
       toast.success("Teste criado com sucesso! Iniciando processamento...");
       
-      // Iniciar execução do teste em background
       await executeTestMutation.mutateAsync({ testId: result });
       
       navigate(`/test/${result}`);
@@ -75,12 +90,43 @@ export default function SubmitTest() {
           <p className="text-slate-600">Submeta uma feature ou problema para análise automática com as nossas protopersonas</p>
         </div>
 
+        <Card className="shadow-lg mb-6">
+          <CardHeader className="bg-indigo-50 border-b">
+              <CardTitle className="text-indigo-900 flex items-center gap-2">
+              Acelerar Criação
+            </CardTitle>
+            <CardDescription>Crie um novo teste rapidamente com base num cenário predefinido</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="flex flex-col sm:flex-row gap-4 items-end">
+              <div className="flex-1 space-y-2 w-full">
+                <Label className="font-semibold">Selecionar Cenário Base</Label>
+                <Select onValueChange={handleBaseOnScenario}>
+                  <SelectTrigger className="border-slate-200">
+                    <SelectValue placeholder="Escolha um cenário existente..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {defaultScenarios.map(s => (
+                      <SelectItem key={s.id} value={s.id.toString()}>
+                        {s.titulo} ({s.categoria})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <p className="text-xs text-muted-foreground max-w-[200px] pb-2">
+                Isso preencherá automaticamente a tarefa e o contexto.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="shadow-lg">
           <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
             <CardTitle>Detalhes do Teste</CardTitle>
             <CardDescription>Forneça informações sobre a feature que deseja testar</CardDescription>
           </CardHeader>
-          
+
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Título */}
